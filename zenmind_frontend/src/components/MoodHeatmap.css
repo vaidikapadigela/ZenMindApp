@@ -1,0 +1,107 @@
+:root {
+    --background-color: #fefae9;
+    --card-background: rgba(252, 234, 217, 0.95);
+    --primary-button: #F2827F;
+    --secondary-button-hover: #B3E0D6;
+    --text-color: #455b22;
+    --gold-color: #E5B73B;
+    --background-color2: #f2e6c7;
+    --header-color: #237658;
+    --somecolor: #F9E076;
+    --hover-red: #FF6347;
+    --hover-teal: #81D8D0;
+    --hover-green: #3BB143;
+  }
+  
+  /* Journal page wrapper */
+  .journal-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    padding: 20px;
+    box-sizing: border-box;
+    background-image: url('/public/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  
+  /* Main journal container */
+  .journal-page {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: var(--card-background);
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .journal-page h1 {
+    text-align: center;
+    color: var(--header-color);
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .journal-page h2 {
+    color: var(--header-color);
+    font-size: 1.8rem;
+    margin: 30px 0 20px;
+    border-bottom: 2px solid var(--background-color2);
+    padding-bottom: 10px;
+  }
+  
+  /* Search and filter container */
+  .search-filter-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .search-input,
+  .mood-filter {
+    padding: 12px;
+    border: 2px solid var(--text-color);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .search-input {
+    flex: 1;
+  }
+  
+  .search-input:focus,
+  .mood-filter:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(35, 118, 88, 0.3);
+  }
+  
+  /* Journal form */
+  .journal-form {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+  }
