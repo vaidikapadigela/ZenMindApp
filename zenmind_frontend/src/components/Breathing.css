@@ -1,0 +1,160 @@
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #82B1FF;
+    --text-color: #2C3E50;
+    --background-color: #F5F7FA;
+    --circle-shadow: rgba(74, 144, 226, 0.3);
+    --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .app {
+    min-height: 100vh;
+    
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--background-color), #E6EEF8);
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .app::before {
+    content: '';
+    position: absolute;
+    background-image: url('/public/bg.jpg');
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.03) 100%);
+    pointer-events: none;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 3rem;
+    text-align: center;
+    opacity: 0;
+    animation: fadeInDown 0.8s var(--transition-timing) forwards;
+  }
+  
+  .circle {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    position: relative;
+    transition: all 4s var(--transition-timing);
+    box-shadow: 0 0 40px var(--circle-shadow);
+  }
+  
+  .circle::before,
+  .circle::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  
+  .circle::before {
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    border: 2px solid var(--primary-color);
+    opacity: 0.5;
+    animation: pulseRing 4s var(--transition-timing) infinite;
+  }
+  
+  .circle::after {
+    width: calc(100% + 40px);
+    height: calc(100% + 40px);
+    border: 2px solid var(--secondary-color);
+    opacity: 0.3;
+    animation: pulseRing 4s var(--transition-timing) infinite 0.5s;
+  }
+  
+  .instruction {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-top: 2rem;
+    text-align: center;
+    opacity: 0;
+    animation: fadeInUp 0.8s var(--transition-timing) forwards;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  @keyframes pulseRing {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.2);
+      opacity: 0;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.5;
+    }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+  
+    .circle {
+      transform: scale(0.8);
+    }
+  
+    .instruction {
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .circle,
+    .circle::before,
+    .circle::after {
+      animation: none;
+      transition: none;
+    }
+  
+    h1,
+    .instruction {
+      animation: none;
+      opacity: 1;
+    }
+  }
