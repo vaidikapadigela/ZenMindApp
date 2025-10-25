@@ -1,0 +1,230 @@
+:root {
+    --background-color: #fefae9;
+    --card-background: rgba(252, 234, 217, 0.95);
+    --primary-button: #F2827F;
+    --secondary-button-hover: #B3E0D6;
+    --text-color: #455b22;
+    --gold-color: #E5B73B;
+    --background-color2: #f2e6c7;
+    --header-color: #237658;
+    --somecolor: #F9E076;
+    --hover-red: #FF6347;
+    --hover-teal: #81D8D0;
+    --hover-green: #3BB143;
+    --button-light-bg: black;
+    --button-dark-bg: white;
+  }
+  
+  /* Wrapper to handle full height */
+  .todo-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    padding: 20px;
+    box-sizing: border-box;
+    background-image: url('/public/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
+  }
+  
+  .todo-app {
+    flex: 1;
+    padding: 40px;
+    background-color: var(--card-background);
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: auto;
+    max-width: 900px;
+    width: 100%;
+  }
+  
+  .todo-app h1 {
+    text-align: center;
+    color: var(--header-color);
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .todo-app .task-input {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .todo-app .task-input input {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid var(--text-color);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .todo-app .task-input input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(35, 118, 88, 0.3);
+  }
+  
+  .todo-app .task-input button {
+    background-color: var(--primary-button);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+  }
+  
+  .todo-app .task-input button:hover {
+    background-color: var(--background-color2);
+    color: var(--text-color);
+    transform: translateY(-2px);
+  }
+  
+  .todo-app .view-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .todo-app .view-toggle button {
+    padding: 10px 20px;
+    border: 2px solid var(--text-color);
+    border-radius: 25px;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+    font-weight: 600;
+  }
+  
+  .todo-app .view-toggle button.active {
+    background-color: var(--primary-button);
+    color: white;
+    border-color: var(--primary-button);
+  }
+  
+  .todo-app .view-toggle button:hover:not(.active) {
+    background-color: var(--background-color2);
+    transform: translateY(-2px);
+  }
+  
+  .todo-app .task-list-container {
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 12px;
+  }
+  
+  .todo-app .task-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .todo-app .task-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 12px;
+    background-color: var(--button-dark-bg);
+    border-radius: 8px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .todo-app .task-list li:hover {
+    transform: translateX(5px);
+  }
+  
+  .todo-app .task-list li.completed {
+    text-decoration: line-through;
+    background-color: var(--header-color);
+    color: white;
+  }
+  
+  .todo-app .task-list li button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px;
+    margin-left: 8px;
+    border-radius: 50%;
+  }
+  
+  .todo-app .task-list li button:hover {
+    transform: scale(1.2);
+  }
+  
+  .todo-app .task-list li.completed button {
+    color: var(--button-dark-bg);
+  }
+  
+  .todo-app .task-list li:not(.completed) button {
+    color: var(--button-light-bg);
+  }
+  
+  .todo-app .task-list li button:hover .complete-icon {
+    color: var(--hover-green);
+  }
+  
+  .todo-app .task-list li button:hover .undo-icon {
+    color: var(--hover-teal);
+  }
+  
+  .todo-app .task-list li button:hover .delete-icon {
+    color: var(--hover-red);
+  }
+  
+  .todo-app .task-list li span {
+    flex: 1;
+    font-size: 16px;
+    padding: 0 15px;
+  }
+  
+  .todo-app .empty-message {
+    text-align: center;
+    color: var(--header-color);
+    font-size: 18px;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  
+  @media (max-width: 768px) {
+    .todo-wrapper {
+        padding: 10px;
+    }
+    
+    .todo-app {
+        padding: 20px;
+    }
+  
+    .todo-app .view-toggle {
+        flex-direction: column;
+        align-items: stretch;
+    }
+  
+    .todo-app .task-input {
+        flex-direction: column;
+    }
+  
+    .todo-app .task-input button {
+        width: 100%;
+    }
+  }
