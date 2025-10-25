@@ -1,0 +1,355 @@
+:root {
+    --background-color: #fefae9;
+    --card-background: #fcead9;
+    --primary-button: #F2827F;
+    --secondary-button-hover: #B3E0D6;
+    --text-color: #455b22;
+    --gold-color: #E5B73B;
+    --background-color2: #f2e6c7;
+    --header-color: #237658;
+    --somecolor: #F9E076;
+    --hover-red: #FF6347;
+    --hover-teal: #81D8D0;
+    --hover-green: #3BB143;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Container and Card Styles */
+
+  .timer-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  
+  .timer-container.sunset { background: linear-gradient(to bottom right, #EBEF95, #EB5A3C); }
+  .timer-container.ocean { background: linear-gradient(to bottom right, #BDCDD6, #1F509A); }
+  .timer-container.forest { background: linear-gradient(to bottom right, #D3F1DF, #1F4529); }
+  .timer-container.twilight { background: linear-gradient(to bottom right, #EFB6C8, #673F69); }
+  
+  .timer-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    max-width: 28rem;
+    width: 100%;
+  }
+  
+  .timer-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--header-color);
+  }
+  
+  /* Section Styles */
+  .palette-section,
+  .duration-section {
+    margin-bottom: 2rem;
+  }
+  
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .section-header h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  /* Palette Grid */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .palette-button {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    text-transform: capitalize;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .palette-button:hover {
+    transform: translateY(-2px);
+  }
+  
+  .palette-button.selected {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--header-color);
+  }
+  
+  /* Preset Grid */
+  .preset-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .preset-button {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: var(--header-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .preset-button:hover {
+    background-color: var(--hover-green);
+  }
+  
+  .preset-button.active {
+    background-color: var(--hover-green);
+  }
+  
+  /* Custom Time Form */
+  .custom-time-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .custom-time-input {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--background-color2);
+    font-size: 0.875rem;
+    color: var(--text-color);
+  }
+  
+  .custom-time-input:focus {
+    outline: none;
+    border-color: var(--header-color);
+    box-shadow: 0 0 0 2px var(--background-color2);
+  }
+  
+  .custom-time-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--header-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .custom-time-button:hover {
+    background-color: var(--hover-green);
+  }
+  
+  /* Timer Display */
+  .timer-display {
+    text-align: center;
+  }
+  
+  .time-text {
+    font-size: 4rem;
+    font-weight: 700;
+    font-family: monospace;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+  }
+  
+  .timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .control-button {
+    background-color: var(--primary-button);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .control-button:hover {
+    background-color: var(--hover-red);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 640px) {
+    .timer-container {
+      padding: 1rem;
+    }
+  
+    .timer-card {
+      padding: 1.5rem;
+    }
+  
+    .time-text {
+      font-size: 3rem;
+    }
+  
+    .palette-grid,
+    .preset-grid {
+      gap: 0.5rem;
+    }
+  
+    .custom-time-form {
+      flex-direction: column;
+    }
+  }
+
+
+/* Popup Overlay */
+/* .popup-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+  z-index: 1000;
+}
+
+.popup-card {
+  background-color: var(--card-background);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  color: var(--text-color);
+  max-width: 22rem;
+  animation: popUp 0.3s ease;
+  position: relative;
+}
+
+.popup-card h2 {
+  color: var(--header-color);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.popup-card p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.popup-ok {
+  background-color: var(--primary-button);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.popup-ok:hover {
+  background-color: var(--hover-red);
+}
+
+.popup-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--header-color);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+} */
+
+/* Popup Overlay */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+  z-index: 1000;
+}
+
+.popup-card {
+  background-color: var(--card-background);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  color: var(--text-color);
+  max-width: 22rem;
+  animation: popUp 0.3s ease;
+  position: relative;
+}
+
+.popup-card h2 {
+  color: var(--header-color);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.popup-card p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.popup-ok {
+  background-color: var(--primary-button);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.popup-ok:hover {
+  background-color: var(--hover-red);
+}
+
+.popup-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--header-color);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
