@@ -10,7 +10,7 @@
     --somecolor: #F9E076;
     --hover-red: #FF6347;
     --hover-teal: #81D8D0;
-    --hover-green: #3BB143;
+    --hover-green: #b3e7b7;
     --button-light-bg: black;
     --button-dark-bg: white;
   }
@@ -140,7 +140,7 @@
   
   .form-group input {
     width: 100%;
-    padding: 15px 15px 15px 40px;
+    padding: 15px 40px 15px 40px;
     border: 2px solid transparent;
     border-radius: 8px;
     font-size: 16px;
@@ -342,6 +342,20 @@
   .social-button:active {
     transform: translateY(1px);
   }
+
+  /* Google fallback button specific styling */
+  .social-button.google {
+    background: #fff;
+    color: #4285F4; /* Google blue */
+    border-color: rgba(66,133,244,0.15);
+  }
+
+  /* Force SVG paths to use currentColor for the fallback Google button so icon isn't white */
+  .social-button.google svg path {
+    fill: currentColor !important;
+  }
+
+  /* removed explicit show-password checkbox styling; icon toggle is used instead */
   
   .error-message {
     display: flex;
@@ -534,3 +548,136 @@
     80% { opacity: 1; }
     100% { opacity: 0; }
   }
+
+  /* Password toggle inside input */
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--header-color);
+    font-weight: 600;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 6px;
+    line-height: 1;
+    /* Prevent any transform or size transitions that could move layout on hover */
+    transition: box-shadow 0.12s ease;
+  }
+
+  .password-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(35, 118, 88, 0.12);
+  }
+
+  .password-toggle:hover,
+  .password-toggle:active {
+    /* keep the same vertical centering on hover/active to avoid shifting */
+    transform: translateY(-50%);
+  }
+
+  .password-toggle svg {
+    display: block; /* avoid inline svg baseline shifts */
+  }
+
+/* Add this to your existing Login.css */
+
+.google-signin-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 250px;
+  padding: 12px 24px;
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 24px;
+  font-family: 'Google Sans', 'Roboto', arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #3c4043;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3);
+}
+
+.google-signin-button:hover {
+  background: #f8f9fa;
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3);
+  border-color: #d2e3fc;
+}
+
+.google-signin-button:active {
+  background: #f1f3f4;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3);
+}
+
+.google-signin-button svg {
+  flex-shrink: 0;
+}
+
+.google-signin-button span {
+  white-space: nowrap;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.password-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #333;
+}
+
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+.google-signin-button {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #3c4043;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 16px;
+}
+
+.google-signin-button:hover:not(:disabled) {
+  background: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.google-signin-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -108,6 +108,21 @@
   margin: 2rem 0;
 }
 
+.stats-container:has(.heatmap-container) {
+  display: block;
+  margin: 2rem 0;
+  overflow: auto;
+  max-width: 100%;
+  padding-bottom: 1rem;
+}
+
+.heatmap-container.stat-card {
+  width: 100%;
+  padding: 1rem;
+  background: var(--background-color2);
+  min-width: min-content;
+}
+
 .stat-card {
   background-color: var(--background-color2);
   padding: 1.5rem;
@@ -115,6 +130,49 @@
   text-align: center;
   box-shadow: var(--shadow-sm);
   transition: var(--transition-smooth);
+}
+
+.heatmap-container {
+  overflow: visible !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  background: transparent !important;
+  position: relative !important;
+}
+
+/* This targets the mood-heatmap-container inside heatmap-container */
+.heatmap-container .mood-heatmap-container {
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* Scale adjustments for different screen sizes */
+@media (max-width: 1200px) {
+  .heatmap-container {
+    transform: scale(0.9);
+    transform-origin: left top;
+  }
+}
+
+@media (max-width: 992px) {
+  .heatmap-container {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 768px) {
+  .heatmap-container {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-width: 576px) {
+  .heatmap-container {
+    transform: scale(0.6);
+  }
 }
 
 .stat-card:hover {

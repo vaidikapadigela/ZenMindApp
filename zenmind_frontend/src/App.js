@@ -12,6 +12,7 @@ import Login from './components/Login';
 import MoodHeatmap from './components/MoodHeatmap';
 import JournalEntries from './components/JournalEntries';
 import { AuthProvider, AuthContext } from './components/AuthContext';
+import { JournalProvider } from './components/JournalContext';
 import PomodoroTimer from './components/PomodoroTimer';
 import { useContext } from 'react';
 
@@ -88,9 +89,11 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
+      <JournalProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </JournalProvider>
     </AuthProvider>
   );
 }
