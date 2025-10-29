@@ -14,6 +14,12 @@ import JournalEntries from './components/JournalEntries';
 import { AuthProvider, AuthContext } from './components/AuthContext';
 import { JournalProvider } from './components/JournalContext';
 import PomodoroTimer from './components/PomodoroTimer';
+import EmotionDetectionPage from './components/EmotionDetectionPage';
+import WorryRelease from './components/WorryRelease';
+import GratitudeLog from './components/GratitudeLog';
+import ZenMemoryGame from './components/ZenGames/ZenMemoryGame';
+import TicTacToe from './components/ZenGames/TicTacToe';
+import Sudoku from './components/ZenGames/Sudoku';
 import { useContext } from 'react';
 
 // Protected Route component
@@ -41,14 +47,44 @@ function AppRoutes() {
             <Journaling />
           </ProtectedRoute>
         } />
+        <Route path="/WorryRelease" element={
+          <ProtectedRoute>
+            <WorryRelease />
+          </ProtectedRoute>
+        } />
+        <Route path="/Sudoku" element={
+          <ProtectedRoute>
+            <Sudoku />
+          </ProtectedRoute>
+        } />
+        <Route path="/TicTacToe" element={
+          <ProtectedRoute>
+            <TicTacToe />
+          </ProtectedRoute>
+        } />
+        <Route path="/ZenMemoryGame" element={
+          <ProtectedRoute>
+            <ZenMemoryGame />
+          </ProtectedRoute>
+        } />
         <Route path="/Todo" element={
           <ProtectedRoute>
             <Todo />
           </ProtectedRoute>
         } />
+        <Route path="/Emotion" element={
+          <ProtectedRoute>
+            <EmotionDetectionPage />
+          </ProtectedRoute>
+        } />
         <Route path="/PomodoroTimer" element={
           <ProtectedRoute>
             <PomodoroTimer />
+          </ProtectedRoute>
+        } />
+        <Route path="/GratitudeLog" element={
+          <ProtectedRoute>
+            <GratitudeLog />
           </ProtectedRoute>
         } />
         <Route path="/Breathing-exercise" element={

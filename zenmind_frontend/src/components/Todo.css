@@ -277,3 +277,44 @@
 .calendar-notice small {
   color: #856404;
 }
+
+.calendar-status-indicator {
+  margin-top: 15px;
+  padding: 12px 18px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--header-color);
+  background: rgba(255, 255, 255, 0.75);
+  border-left: 4px solid var(--header-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+  animation: fadeSlideIn 0.4s ease;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+/* Optional animated glowing dot */
+.calendar-status-indicator::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background: var(--hover-green);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(59, 177, 67, 0.8);
+}
+
+/* Entry animation */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

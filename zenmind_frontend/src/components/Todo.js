@@ -163,7 +163,11 @@ const Todo = () => {
 					<div className="calendar-status-indicator">
 						Calendar sync enabled
 					</div>
+					
 				)}
+				<br></br>
+				<br></br>
+
 
 				{user?.isGoogleUser && !user?.accessToken && (
 					<div className="calendar-warning">
