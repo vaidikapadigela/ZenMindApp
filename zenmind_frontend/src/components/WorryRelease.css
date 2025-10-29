@@ -1,29 +1,46 @@
-@import './Todo.css'; /* 👈 optional if shared variables are in Todo.css */
+@import './Todo.css';
 
 .worry-card {
+  position: relative;
   text-align: center;
   color: var(--text-color);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  animation: fadeSlideIn 0.6s ease;
+  overflow: hidden;
+  min-height: 550px;
 }
 
+/* text intro */
 .worry-subtext {
   color: var(--header-color);
   font-size: 1.1rem;
   margin-bottom: 20px;
 }
 
+/* wrapper for both dustbin and textbox */
+.worry-zone {
+  position: relative;
+  height: 240px;
+  margin-bottom: 40px;
+}
+
+/* textarea itself */
 .worry-input {
-  width: 100%;
-  min-height: 150px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 160px;
   border: 2px solid var(--text-color);
   border-radius: 12px;
   padding: 15px;
   font-size: 1rem;
   resize: none;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   color: var(--text-color);
   transition: all 0.4s ease;
+  z-index: 2;
+  transform-origin: center;
 }
 
 .worry-input:focus {
@@ -31,6 +48,25 @@
   box-shadow: 0 0 0 3px rgba(35, 118, 88, 0.3);
 }
 
+/* Dustbin placed behind textarea */
+.dustbin {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.5rem;
+  opacity: 0.8;
+  z-index: 1;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* dustbin soft hover motion */
+@keyframes float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* release button */
 .release-button {
   background-color: var(--primary-button);
   color: white;
@@ -41,7 +77,6 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  margin-top: 20px;
 }
 
 .release-button:hover {
@@ -50,29 +85,33 @@
   transform: translateY(-2px);
 }
 
-.vanish-text {
-  margin-top: 30px;
-  font-size: 1.2rem;
-  color: var(--gold-color);
-  animation: fadeUpDisappear 3s ease forwards;
+/* 🧻 crumple + fall into bin animation */
+.crumple {
+  animation: crumpleFall 3.4s ease forwards;
 }
 
-.fade-up {
-  animation: fadeUpDisappear 2s ease forwards;
-}
-
-/* animation for disappearing text */
-@keyframes fadeUpDisappear {
+@keyframes crumpleFall {
   0% {
+    transform: translateX(-50%) scale(1) rotate(0deg);
     opacity: 1;
-    transform: translateY(0);
   }
-  70% {
-    opacity: 0.6;
-    transform: translateY(-20px);
+  25% {
+    transform: translateX(-50%) scale(0.9) rotate(5deg);
+  }
+  45% {
+    transform: translateX(-50%) scale(0.7) rotate(-10deg);
+    filter: brightness(0.95);
+  }
+  65% {
+    transform: translateX(-50%) scale(0.5) rotate(12deg) translateY(100px);
+    opacity: 0.8;
+  }
+  85% {
+    transform: translateX(-50%) scale(0.3) rotate(-6deg) translateY(160px);
+    opacity: 0.5;
   }
   100% {
+    transform: translateX(-50%) scale(0.2) rotate(0deg) translateY(220px);
     opacity: 0;
-    transform: translateY(-40px);
   }
 }

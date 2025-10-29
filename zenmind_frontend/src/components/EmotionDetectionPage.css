@@ -1,209 +1,189 @@
-@import "./Todo.css";
-
-/* Existing ZenMind theme remains */
-
-.upload-section {
+.emotion-wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 25px;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 90px;
+  background: url("/public/bg.jpg") no-repeat center center/cover;
 }
 
-.custom-file-upload {
+.emotion-card {
+  width: 90%;
+  max-width: 480px;
+  color: var(--text-color);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  backdrop-filter: blur(8px);
+  animation: fadeSlideIn 0.6s ease;
+}
+
+.emotion-subtext {
+  color: var(--header-color);
+  margin-bottom: 20px;
+}
+
+/* --- Mode Selector --- */
+.mode-selector {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 25px 0;
+  flex-wrap: wrap;
+}
+
+.mode-selector button {
   background-color: var(--primary-button);
   color: white;
+  border: none;
   padding: 10px 20px;
+  font-size: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.mode-selector button:hover {
+  background-color: var(--background-color2);
+  color: var(--text-color);
+  transform: translateY(-3px);
+}
+
+.mode-selector button.active {
+  background-color: var(--header-color);
+  color: white;
+  box-shadow: 0 6px 15px rgba(35, 118, 88, 0.3);
+}
+
+/* --- Camera --- */
+.camera-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto 20px;
+}
+
+.camera-feed {
+  border-radius: 15px;
+  border: 3px solid var(--header-color);
+  background: #000;
+  object-fit: cover;
+}
+
+/* --- Buttons --- */
+.button-group {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.button-group button {
+  background-color: var(--primary-button);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+}
+
+.button-group button:hover {
+  background-color: var(--background-color2);
+  color: var(--text-color);
+}
+
+/* --- Manual Input --- */
+.manual-input-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.manual-input-box input {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 14px;
+  border: 2px solid var(--header-color);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text-color);
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.manual-input-box input:focus {
+  border-color: var(--gold-color);
+  box-shadow: 0 0 8px rgba(218, 165, 32, 0.3);
+}
+
+.manual-input-box button {
+  background-color: var(--primary-button);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 15px;
   border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
 }
 
-.custom-file-upload:hover {
+.manual-input-box button:hover {
   background-color: var(--background-color2);
   color: var(--text-color);
 }
 
-.custom-file-upload input[type="file"] {
-  display: none;
-}
-
-.preview-image {
-  margin-top: 20px;
-  width: 260px;
-  height: auto;
-  border-radius: 12px;
-  border: 3px solid var(--header-color);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-}
-
-/* Emotion Result Section */
+/* --- Result --- */
 .emotion-result {
-  margin-top: 40px;
-  background: rgba(252, 234, 217, 0.85); /* matches card background tone */
-  border-radius: 16px;
-  padding: 25px 35px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(6px);
-  text-align: center;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--text-color);
-  transition: all 0.3s ease;
-  animation: fadeIn 0.8s ease-in-out;
-}
-
-.emotion-result:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
-}
-
-/* Emotion Title */
-.emotion-result h2 {
-  color: var(--header-color);
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-  text-shadow: 1px 1px 3px rgba(229, 183, 59, 0.2);
-}
-
-/* Subheading */
-.emotion-result h3 {
-  color: var(--gold-color);
-  margin-bottom: 15px;
-  font-weight: 600;
-  font-size: 1.3rem;
-}
-
-/* List Styling */
-.emotion-result ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  text-align: left;
-}
-
-.emotion-result li {
-  background-color: var(--card-background);
-  margin: 10px 0;
-  padding: 12px 18px;
+  margin-top: 25px;
+  background: var(--background-color2);
+  padding: 15px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  font-size: 1.05rem;
-  transition: all 0.25s ease;
+  font-weight: bold;
+  color: var(--text-color);
+  animation: fadeIn 0.8s ease;
 }
 
-.emotion-result li:hover {
-  transform: translateX(6px);
-  background-color: var(--background-color2);
+.glow-text h2 {
+  animation: glowPulse 2s infinite alternate;
 }
 
-/* Subtle animation for entry */
-@keyframes fadeIn {
+/* --- Animations --- */
+@keyframes glowPulse {
+  from {
+    text-shadow: 0 0 5px var(--gold-color);
+  }
+  to {
+    text-shadow: 0 0 20px var(--gold-color);
+  }
+}
+
+@keyframes fadeSlideIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-/* ================================= */
-/* Mode Selection Buttons (Top Row)  */
-/* ================================= */
-
-.mode-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-top: 20px;
-  margin-bottom: 25px;
-}
-
-.mode-buttons button {
-  background-color: var(--primary-button);
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  font-size: 16px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.mode-buttons button:hover {
-  background-color: var(--background-color2);
-  color: var(--text-color);
-  transform: translateY(-3px);
-}
-
-.mode-buttons button.active {
-  background-color: var(--header-color);
-  color: white;
-  box-shadow: 0 6px 15px rgba(35, 118, 88, 0.3);
-}
-/* =============================== */
-/* Manual Emotion Input (Type Mode) */
-/* =============================== */
-
-.manual-input-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  margin-top: 25px;
-}
-
-.manual-input-container input[type="text"] {
-  width: 80%;
-  max-width: 400px;
-  padding: 12px 18px;
-  font-size: 16px;
-  border: 2px solid var(--gold-color);
-  border-radius: 12px;
-  outline: none;
-  background-color: var(--card-background);
-  color: var(--text-color);
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.manual-input-container input[type="text"]:focus {
-  border-color: var(--header-color);
-  box-shadow: 0 0 10px rgba(0, 128, 96, 0.3);
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
-.manual-input-container button {
-  background-color: var(--primary-button);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: all 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.manual-input-container button:hover {
-  background-color: var(--header-color);
-  transform: translateY(-2px);
-}
-.camera-section,
-.upload-section,
-.manual-input-container {
-  animation: fadeIn 0.5s ease;
-}
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -1,0 +1,79 @@
+.breakout-bg {
+  min-height: 100vh;
+  background: url("/public/bg.jpg") center/cover no-repeat fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.breakout-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  margin: 2rem auto;
+  position: relative;
+}
+
+.breakout-container h2 {
+  color: #5c755e;
+  margin-bottom: 0.3rem;
+}
+
+.instructions {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 0.8rem;
+}
+
+canvas {
+  background: #fefcf3;
+  border-radius: 10px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.overlay button {
+  margin-top: 0.4rem;
+  padding: 0.35rem 0.9rem;
+  border: none;
+  border-radius: 8px;
+  background: #77bfa3;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.9rem;
+}
+
+.overlay button:hover {
+  background: #5ea98b;
+}
+
+.gameover-title {
+  font-size: 1.2rem;
+  margin: 0.3rem 0;
+  font-weight: 600;
+}
+
+.score-text {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+}

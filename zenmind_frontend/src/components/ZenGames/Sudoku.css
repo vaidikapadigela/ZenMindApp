@@ -94,9 +94,12 @@
 }
 
 .cell.selected {
-  border: 2px solid var(--gold-color);
+  outline: 2px solid var(--gold-color);
+  outline-offset: -2px;
   box-shadow: inset 0 0 5px rgba(229, 183, 59, 0.4);
+  transition: outline 0.2s ease, box-shadow 0.2s ease;
 }
+
 
 /* Conflict cells */
 .cell.conflict {
@@ -176,3 +179,29 @@
     max-width: 300px;
   }
 }
+
+
+/* --- Fix spacing between sudoku rows --- */
+
+/* Remove any line-height gaps between rows */
+.board {
+  line-height: 0;
+}
+
+/* Ensure rows stack flush */
+.board-row {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure no extra space from inputs or divs */
+.cell,
+.cell-input,
+.given-value {
+  line-height: 1;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+}
+

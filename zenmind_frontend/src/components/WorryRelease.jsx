@@ -3,15 +3,17 @@ import "./WorryRelease.css";
 
 const WorryRelease = () => {
   const [worry, setWorry] = useState("");
-  const [released, setReleased] = useState(false);
+  const [crumple, setCrumple] = useState(false);
 
   const handleRelease = () => {
     if (!worry.trim()) return;
-    setReleased(true);
+    setCrumple(true);
+
+    // reset after animation
     setTimeout(() => {
+      setCrumple(false);
       setWorry("");
-      setReleased(false);
-    }, 3000);
+    }, 3500);
   };
 
   return (
@@ -22,27 +24,25 @@ const WorryRelease = () => {
           Write down your worries and watch them fade away — let go of what no longer serves you.
         </p>
 
-        <textarea
-          className={`worry-input ${released ? "fade-up" : ""}`}
-          value={worry}
-          onChange={(e) => setWorry(e.target.value)}
-          placeholder="Type your worry here..."
-          disabled={released}
-        />
+        <div className="worry-zone">
+          <div className="dustbin">🗑️</div>
+
+          <textarea
+            className={`worry-input ${crumple ? "crumple" : ""}`}
+            value={worry}
+            onChange={(e) => setWorry(e.target.value)}
+            placeholder="Type your worry here..."
+            disabled={crumple}
+          />
+        </div>
 
         <button
           className="release-button"
           onClick={handleRelease}
-          disabled={!worry.trim() || released}
+          disabled={!worry.trim() || crumple}
         >
           Release ✨
         </button>
-
-        {released && (
-          <div className="vanish-text">
-            <span>{worry}</span>
-          </div>
-        )}
       </div>
     </div>
   );

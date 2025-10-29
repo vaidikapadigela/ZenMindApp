@@ -1,271 +1,178 @@
-import React, { useState, useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './Navbar.css';
-import { AuthContext } from './AuthContext';
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./Navbar.css";
+import { AuthContext } from "./AuthContext";
+import { FaChevronDown } from "react-icons/fa";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const location = useLocation();
   const { isLoggedIn, logout } = useContext(AuthContext);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleDropdown = (name) =>
+    setActiveDropdown(activeDropdown === name ? null : name);
 
   const handleLogout = () => {
     logout();
-    // Optional: redirect to homepage after logout
-    window.location.href = '/';
+    window.location.href = "/";
   };
+
+  // 🧠 Close dropdown automatically when route changes
+  useEffect(() => {
+    setActiveDropdown(null);
+  }, [location.pathname]);
 
   return (
     <nav className="navbar">
+      {/* === LEFT: Brand === */}
       <div className="navbar-brand">
-        <Link to="/" className={`navbar-logo ${isMenuOpen ? 'active' : ''}`}>
+        <Link to="/" className="navbar-logo">
           ZenMind
         </Link>
-        <button className="navbar-toggle" onClick={toggleMenu}>
+
+        <button
+          className="navbar-toggle"
+          onClick={toggleMenu}
+          aria-expanded={isMenuOpen}
+        >
           <span className="hamburger"></span>
         </button>
       </div>
 
-      <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-        {/* <Link 
-          to="/" 
-          className={`navbar-item ${location.pathname === '/' ? 'active' : ''}`}
-        >
-          Home
-        </Link> */}
-        
-        {isLoggedIn ? (
-          <>
-            <Link 
-              to="/Todo" 
-              className={`navbar-item ${location.pathname === '/Todo' ? 'active' : ''}`}
-            >
-              Todo
-            </Link>
+      {/* === CENTER + RIGHT === */}
+      <div className={`navbar-menu ${isMenuOpen ? "active" : ""}`}>
+        {/* === CENTER: Mindful / Productive / Games === */}
+        {isLoggedIn && (
+          <div className="navbar-center">
+            {/* Mindful Dropdown */}
+            <div className="navbar-dropdown">
+              <button
+                className="dropdown-toggle"
+                onClick={() => toggleDropdown("mindful")}
+              >
+                Mindful{" "}
+                <FaChevronDown
+                  className={`arrow ${
+                    activeDropdown === "mindful" ? "open" : ""
+                  }`}
+                />
+              </button>
+              {activeDropdown === "mindful" && (
+                <div className="dropdown-menu">
+                  <Link to="/WorryRelease" className="dropdown-item">
+                    Worry Release
+                  </Link>
+                  <Link to="/GratitudeLog" className="dropdown-item">
+                    Gratitude Log
+                  </Link>
+                  <Link to="/Journaling" className="dropdown-item">
+                    Journal
+                  </Link>
+                  <Link to="/Soundscape" className="dropdown-item">
+                    Soundscape
+                  </Link>
+                  <Link to="/Meditation-timer" className="dropdown-item">
+                    Meditation Timer
+                  </Link>
+                </div>
+              )}
+            </div>
 
-            <Link 
-              to="/ZenMemoryGame" 
-              className={`navbar-item ${location.pathname === '/ZenMemoryGame' ? 'active' : ''}`}
-            >
-              ZenMemoryGame
-            </Link>
+            {/* Productive Dropdown */}
+            <div className="navbar-dropdown">
+              <button
+                className="dropdown-toggle"
+                onClick={() => toggleDropdown("productive")}
+              >
+                Productive{" "}
+                <FaChevronDown
+                  className={`arrow ${
+                    activeDropdown === "productive" ? "open" : ""
+                  }`}
+                />
+              </button>
+              {activeDropdown === "productive" && (
+                <div className="dropdown-menu">
+                  <Link to="/Todo" className="dropdown-item">
+                    To-Do
+                  </Link>
+                  <Link to="/PomodoroTimer" className="dropdown-item">
+                    Pomodoro Timer
+                  </Link>
+                  <Link to="/Emotion" className="dropdown-item">
+                    Emotion Detection
+                  </Link>
+                </div>
+              )}
+            </div>
 
-            <Link 
-              to="/WorryRelease" 
-              className={`navbar-item ${location.pathname === '/WorryRelease' ? 'active' : ''}`}
-            >
-              WorryRelease
-            </Link>
-            
-            <Link 
-              to="/Emotion" 
-              className={`navbar-item ${location.pathname === '/Emotion' ? 'active' : ''}`}
-            >
-              EmotionDetectionPage
-            </Link>
-
-            <Link 
-              to="/Sudoku" 
-              className={`navbar-item ${location.pathname === '/Emotion' ? 'active' : ''}`}
-            >
-              Sudoku
-            </Link>
-            <Link 
-              to="/TicTacToe" 
-              className={`navbar-item ${location.pathname === '/TicTacToe' ? 'active' : ''}`}
-            >
-              TicTacToe
-            </Link>
-            <Link 
-              to="/GratitudeLog" 
-              className={`navbar-item ${location.pathname === '/GratitudeLog' ? 'active' : ''}`}
-            >
-              GratitudeLog
-            </Link>
-            <Link 
-              to="/Journaling" 
-              className={`navbar-item ${location.pathname === '/Journaling' ? 'active' : ''}`}
-            >
-              Journal
-            </Link>
-            
-            <Link 
-              to="/Soundscape" 
-              className={`navbar-item ${location.pathname === '/Soundscape' ? 'active' : ''}`}
-            >
-              Soundscape
-            </Link>
-            <Link 
-              to="/Meditation-timer" 
-              className={`navbar-item ${location.pathname === '/Meditation-timer' ? 'active' : ''}`}
-            >
-              Meditation Timer
-            </Link>
-
-            <Link 
-              to="/PomodoroTimer" 
-              className={`navbar-item ${location.pathname === '/PomodoroTimer' ? 'active' : ''}`}
-            >
-              Pomodoro
-            </Link>
-
-            <Link 
-              to="/ProfilePage" 
-              className={`navbar-item ${location.pathname === '/ProfilePage' ? 'active' : ''}`}
-            >
-              Profile
-            </Link>
-            
-            <button 
-              onClick={handleLogout}
-              className="navbar-item logout-button"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <Link 
-            to="/Login" 
-            className={`navbar-item ${location.pathname === '/Login' ? 'active' : ''}`}
-          >
-            Login
-          </Link>
+            {/* Games Dropdown */}
+            <div className="navbar-dropdown">
+              <button
+                className="dropdown-toggle"
+                onClick={() => toggleDropdown("games")}
+              >
+                Games{" "}
+                <FaChevronDown
+                  className={`arrow ${
+                    activeDropdown === "games" ? "open" : ""
+                  }`}
+                />
+              </button>
+              {activeDropdown === "games" && (
+                <div className="dropdown-menu">
+                  <Link to="/ZenMemoryGame" className="dropdown-item">
+                    Zen Memory
+                  </Link>
+                  <Link to="/Sudoku" className="dropdown-item">
+                    Sudoku
+                  </Link>
+                  <Link to="/TicTacToe" className="dropdown-item">
+                    Tic Tac Toe
+                  </Link>
+                  <Link to="/ColouringBook" className="dropdown-item">
+                    Scribble
+                  </Link>
+                  <Link to="/BreakoutGame" className="dropdown-item">
+                    Breakout Game
+                  </Link>
+                  <Link to="/ClickerGame" className="dropdown-item">
+                    Clicker Game
+                  </Link>
+                  <Link to="/Game2048" className="dropdown-item">
+                    2048
+                  </Link>
+                  <Link to="/MazeGame" className="dropdown-item">
+                    Maze Game
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
         )}
+
+      {/* === RIGHT: Profile + Logout === */}
+<div className="navbar-right">
+  {isLoggedIn ? (
+    <>
+      <Link to="/ProfilePage" className="profile-button">
+        Profile
+      </Link>
+      <button onClick={handleLogout} className="logout-button">
+        Logout
+      </button>
+    </>
+  ) : (
+    <Link to="/Login" className="logout-button">
+      Login
+    </Link>
+  )}
+</div>
       </div>
     </nav>
   );
 };
 
 export default Navbar;
-
-// import React, { useState, useContext, useEffect } from "react";
-// import { Link, useLocation } from "react-router-dom";
-// import { AuthContext } from "./AuthContext";
-// import { Menu, X } from "lucide-react";
-// import "./Navbar.css";
-
-// const Navbar = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const location = useLocation();
-//   const { isLoggedIn, logout } = useContext(AuthContext);
-
-//   useEffect(() => {
-//   if (isOpen) {
-//     document.body.classList.add("sidebar-open");
-//   } else {
-//     document.body.classList.remove("sidebar-open");
-//   }
-// }, [isOpen]);
-
-//   const handleLogout = () => {
-//     logout();
-//     window.location.href = "/";
-//   };
-
-//   return (
-//     <>
-//       <button className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>
-//         {isOpen ? <X size={24} /> : <Menu size={24} />}
-//       </button>
-
-//       <aside className={`sidebar ${isOpen ? "open" : ""}`}>
-//         <h2 className="sidebar-logo">🪷 ZenMind</h2>
-
-//         {isLoggedIn ? (
-//           <>
-//             <Link
-//               to="/Todo"
-//               className={`sidebar-item ${
-//                 location.pathname === "/Todo" ? "active" : ""
-//               }`}
-//             >
-//               📝 To-Do
-//             </Link>
-//             <Link
-//               to="/WorryRelease"
-//               className={`sidebar-item ${
-//                 location.pathname === "/WorryRelease" ? "active" : ""
-//               }`}
-//             >
-//               📝 Worry Release
-//             </Link>
-//             <Link
-//               to="/Emotion"
-//               className={`sidebar-item ${
-//                 location.pathname === "/Emotion" ? "active" : ""
-//               }`}
-//             >
-//               😊 Emotion
-//             </Link>
-//             <Link
-//               to="/GratitudeLog"
-//               className={`sidebar-item ${
-//                 location.pathname === "/GratitudeLog" ? "active" : ""
-//               }`}
-//             >
-//               🌼 Gratitude
-//             </Link>
-//             <Link
-//               to="/Journaling"
-//               className={`sidebar-item ${
-//                 location.pathname === "/Journaling" ? "active" : ""
-//               }`}
-//             >
-//               📔 Journal
-//             </Link>
-//             <Link
-//               to="/Soundscape"
-//               className={`sidebar-item ${
-//                 location.pathname === "/Soundscape" ? "active" : ""
-//               }`}
-//             >
-//               🎧 Soundscape
-//             </Link>
-//             <Link
-//               to="/Meditation-timer"
-//               className={`sidebar-item ${
-//                 location.pathname === "/Meditation-timer" ? "active" : ""
-//               }`}
-//             >
-//               🧘 Meditation
-//             </Link>
-//             <Link
-//               to="/PomodoroTimer"
-//               className={`sidebar-item ${
-//                 location.pathname === "/PomodoroTimer" ? "active" : ""
-//               }`}
-//             >
-//               ⏱️ Pomodoro
-//             </Link>
-//             <Link
-//               to="/ProfilePage"
-//               className={`sidebar-item ${
-//                 location.pathname === "/ProfilePage" ? "active" : ""
-//               }`}
-//             >
-//               👤 Profile
-//             </Link>
-
-//             <button className="sidebar-item logout-btn" onClick={handleLogout}>
-//               🚪 Logout
-//             </button>
-//           </>
-//         ) : (
-//           <Link
-//             to="/Login"
-//             className={`sidebar-item ${
-//               location.pathname === "/Login" ? "active" : ""
-//             }`}
-//           >
-//             🔐 Login
-//           </Link>
-//         )}
-//       </aside>
-//     </>
-//   );
-// };
-
-// export default Navbar;

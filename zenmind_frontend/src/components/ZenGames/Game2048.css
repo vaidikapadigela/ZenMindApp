@@ -1,0 +1,94 @@
+.game2048-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("/public/bg.jpg") center/cover no-repeat fixed;
+  padding: 1rem;
+}
+
+.game2048-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 2rem 3rem;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.game2048-card h2 {
+  color: #4c956c;
+  margin-bottom: 0.5rem;
+}
+
+.desc {
+  color: #777;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 70px);
+  grid-gap: 8px;
+  margin: 1rem auto;
+  width: fit-content;
+}
+
+.tile {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  background-color: rgba(238, 228, 218, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #3a3a3a;
+  transition: all 0.15s ease;
+}
+
+/* Tile Colors */
+.tile-2 { background: #dfe7fd; color: #776e65; }
+.tile-4 { background: #bde0fe; color: #776e65; }
+.tile-8 { background: #a8dadc; color: #f9f6f2; }
+.tile-16 { background: #ffd6a5; color: #f9f6f2; }
+.tile-32 { background: #fdffb6; color: #776e65; }
+.tile-64 { background: #caffbf; color: #f9f6f2; }
+.tile-128 { background: #9bf6ff; color: #f9f6f2; font-size: 1.2rem; }
+.tile-256 { background: #ffc6ff; color: #f9f6f2; font-size: 1.2rem; }
+.tile-512 { background: #ffadad; color: #f9f6f2; font-size: 1.2rem; }
+.tile-1024 { background: #ffd6a5; color: #f9f6f2; font-size: 1rem; }
+.tile-2048 { background: #caffbf; color: #f9f6f2; font-size: 1rem; }
+
+.score {
+  color: #5c755e;
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.game-over-text {
+  color: #d9534f;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+}
+
+button {
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
+  background: #77bfa3;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+button:hover {
+  background: #5ea98b;
+  transform: translateY(-1px);
+}

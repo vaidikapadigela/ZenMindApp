@@ -1,0 +1,80 @@
+.clicker-container {
+  min-height: 100vh;
+  width: 100%;
+  background: url("/public/bg.jpg") no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  
+}
+
+.clicker-content {
+ background-color: var(--background-color2);
+  backdrop-filter: blur(8px);
+  border-radius: 25px;
+  padding: 3rem 5rem;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.clicker-title {
+  font-size: 2rem;
+  color: #4c956c;
+  margin-bottom: 0.3em;
+}
+
+.clicker-desc {
+  font-size: 1rem;
+  color: #6d7a70;
+  margin-bottom: 2em;
+}
+
+.clicker-button {
+  width: 150px;
+  height: 150px;
+  background-color: #a8e6cf;
+  color: #3a3a3a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 0 auto;
+  box-shadow: 0 5px 15px rgba(76, 149, 108, 0.3);
+  transition: all 0.2s ease;
+}
+
+.clicker-button:hover {
+  background-color: #96d4be;
+  transform: scale(1.05);
+}
+
+.clicker-button.clicked {
+  background-color: #81c784;
+  transform: scale(0.95);
+}
+
+.clicker-score {
+  font-size: 1.5rem;
+  color: #4c956c;
+  margin-top: 1.5em;
+}
+
+.clicker-reset {
+  background-color: #f7d794;
+  border: none;
+  padding: 0.7em 1.5em;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1.2em;
+  color: #4c4c4c;
+  transition: background 0.3s ease;
+}
+
+.clicker-reset:hover {
+  background-color: #f9c74f;
+}

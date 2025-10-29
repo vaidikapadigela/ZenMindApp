@@ -7,12 +7,22 @@ const ZenMemoryGame = () => {
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
 
-  useEffect(() => {
+  // shuffle cards
+  const shuffleCards = () => {
     const shuffled = [...icons, ...icons]
       .sort(() => Math.random() - 0.5)
       .map((symbol, index) => ({ id: index, symbol }));
     setCards(shuffled);
+    setFlipped([]);
+    setMatched([]);
+    setGameOver(false);
+  };
+
+  // initial shuffle
+  useEffect(() => {
+    shuffleCards();
   }, []);
 
   const handleFlip = (index) => {
@@ -31,7 +41,11 @@ const ZenMemoryGame = () => {
 
   useEffect(() => {
     if (matched.length === cards.length && cards.length > 0) {
-      setTimeout(() => alert("✨ Well done! Your mind is calm and focused."), 400);
+      setGameOver(true);
+      setTimeout(() => {
+        alert("✨ Well done! Your mind is calm and focused. 🪷");
+        shuffleCards(); // reshuffle positions after game ends
+      }, 600);
     }
   }, [matched, cards]);
 
@@ -60,6 +74,10 @@ const ZenMemoryGame = () => {
             );
           })}
         </div>
+
+        <button className="restart-btn" onClick={shuffleCards}>
+          Restart Game
+        </button>
 
         <p className="zenmind-tip">
           Tip: Focus on your breathing while flipping cards — it helps improve calm concentration 💫
