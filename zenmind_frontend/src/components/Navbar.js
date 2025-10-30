@@ -1,101 +1,105 @@
-import React, { useState, useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './Navbar.css';
-import { AuthContext } from './AuthContext';
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
+import { AuthContext } from "./AuthContext";
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
+  const [activeBox, setActiveBox] = useState(null);
   const { isLoggedIn, logout } = useContext(AuthContext);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   const handleLogout = () => {
     logout();
-    // Optional: redirect to homepage after logout
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/" className={`navbar-logo ${isMenuOpen ? 'active' : ''}`}>
-          ZenMind
-        </Link>
-        <button className="navbar-toggle" onClick={toggleMenu}>
-          <span className="hamburger"></span>
-        </button>
-      </div>
-
-      <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-        {/* <Link 
-          to="/" 
-          className={`navbar-item ${location.pathname === '/' ? 'active' : ''}`}
-        >
-          Home
-        </Link> */}
-        
-        {isLoggedIn ? (
-          <>
-            <Link 
-              to="/Todo" 
-              className={`navbar-item ${location.pathname === '/Todo' ? 'active' : ''}`}
-            >
-              Todo
-            </Link>
-            <Link 
-              to="/Journaling" 
-              className={`navbar-item ${location.pathname === '/Journaling' ? 'active' : ''}`}
-            >
-              Journal
-            </Link>
-            
-            <Link 
-              to="/Soundscape" 
-              className={`navbar-item ${location.pathname === '/Soundscape' ? 'active' : ''}`}
-            >
-              Soundscape
-            </Link>
-            <Link 
-              to="/Meditation-timer" 
-              className={`navbar-item ${location.pathname === '/Meditation-timer' ? 'active' : ''}`}
-            >
-              Meditation Timer
-            </Link>
-
-            <Link 
-              to="/PomodoroTimer" 
-              className={`navbar-item ${location.pathname === '/PomodoroTimer' ? 'active' : ''}`}
-            >
-              Pomodoro
-            </Link>
-
-            <Link 
-              to="/ProfilePage" 
-              className={`navbar-item ${location.pathname === '/ProfilePage' ? 'active' : ''}`}
-            >
-              Profile
-            </Link>
-            
-            <button 
-              onClick={handleLogout}
-              className="navbar-item logout-button"
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <Link 
-            to="/Login" 
-            className={`navbar-item ${location.pathname === '/Login' ? 'active' : ''}`}
-          >
-            Login
+    <>
+      <nav className="zen-navbar">
+        {/* === LEFT: Brand === */}
+        <div className="zen-navbar__brand">
+          <Link to="/" className="zen-navbar__logo">
+            ZenMind
           </Link>
+        </div>
+
+        {/* === CENTER MENU === */}
+        {isLoggedIn && (
+          <div className="zen-navbar__center">
+            <div
+              className="zen-navbar__group"
+              onMouseEnter={() => setActiveBox("mindful")}
+              onMouseLeave={() => setActiveBox(null)}
+            >
+              <div className="zen-navbar__item">Mindful</div>
+              {activeBox === "mindful" && (
+                <div className="zen-hoverbox">
+                  <Link to="/WorryRelease">Worry Release</Link>
+                  <Link to="/GratitudeLog">Gratitude Log</Link>
+                  <Link to="/Journaling">Journal</Link>
+                  <Link to="/Soundscape">Soundscape</Link>
+                  <Link to="/Meditation-timer">Meditation Timer</Link>
+                </div>
+              )}
+            </div>
+
+            <div
+              className="zen-navbar__group"
+              onMouseEnter={() => setActiveBox("productive")}
+              onMouseLeave={() => setActiveBox(null)}
+            >
+              <div className="zen-navbar__item">Productive</div>
+              {activeBox === "productive" && (
+                <div className="zen-hoverbox">
+                  <Link to="/Todo">To-Do</Link>
+                  <Link to="/PomodoroTimer">Pomodoro Timer</Link>
+                </div>
+              )}
+            </div>
+
+            <div
+              className="zen-navbar__group"
+              onMouseEnter={() => setActiveBox("games")}
+              onMouseLeave={() => setActiveBox(null)}
+            >
+              <div className="zen-navbar__item">Games</div>
+              {activeBox === "games" && (
+                <div className="zen-hoverbox grid-large">
+                  <Link to="/ZenMemoryGame">Memory</Link>
+                  <Link to="/Sudoku">Sudoku</Link>
+                  <Link to="/TicTacToe">Tic Tac Toe</Link>
+                  <Link to="/ColouringBook">Scribble</Link>
+                  <Link to="/BreakoutGame">Breakout</Link>
+                  <Link to="/ClickerGame">Clicker</Link>
+                  <Link to="/Game2048">2048</Link>
+                  <Link to="/MazeGame">Maze</Link>
+                  <Link to="/SnakeGame">Snake</Link>
+                  <Link to="/FlappyBird">Flappy Bird</Link>
+                  <Link to="/SlidingPuzzleGame">Sliding Puzzle</Link>
+                </div>
+              )}
+            </div>
+          </div>
         )}
-      </div>
-    </nav>
+
+        {/* === RIGHT BUTTONS === */}
+        <div className="zen-navbar__right">
+          {isLoggedIn ? (
+            <>
+              <Link to="/ProfilePage">
+                <button className="zen-navbar__btn">Profile</button>
+              </Link>
+              <button onClick={handleLogout} className="zen-navbar__btn">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/Login">
+              <button className="zen-navbar__btn">Login</button>
+            </Link>
+          )}
+        </div>
+      </nav>
+    </>
   );
 };
 

@@ -1,0 +1,138 @@
+.puzzle-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: url("/public/bg.jpg") no-repeat center center/cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.puzzle-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-color);
+  margin-bottom: 1.2rem;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.6px;
+}
+
+.puzzle-card {
+  background: var(--card-background);
+  backdrop-filter: blur(8px);
+  border-radius: 25px;
+  padding: 2.5rem 4rem;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.puzzle-card:hover {
+  transform: translateY(-3px);
+}
+
+.puzzle-desc {
+  font-size: 1rem;
+  color: var(--text-color);
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.puzzle-moves {
+  font-size: 1rem;
+  color: var(--gold-color);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* 🧩 Grid styling */
+.puzzle-grid {
+  display: grid;
+  gap: 6px;
+  border: 3px solid rgba(245, 230, 180, 0.6);
+  border-radius: 10px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1.2rem;
+}
+
+.puzzle-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.puzzle-tile {
+  background-color: #fce8b2;
+  color: #4a4a4a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.puzzle-tile:hover {
+  background-color: #ffe194;
+  transform: scale(1.05);
+}
+
+.puzzle-empty {
+  background: transparent;
+  border: 2px dashed rgba(120, 100, 80, 0.2);
+}
+
+/* 🎉 Win Section */
+.puzzle-win {
+  margin-top: 0.5em;
+}
+
+.puzzle-win-text {
+  font-size: 1.2rem;
+  color: #4a4a4a;
+  font-weight: 600;
+}
+
+/* 🔁 Button */
+.puzzle-btn {
+  background-color: #fce8b2;
+  border: none;
+  padding: 0.8em 1.6em;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1em;
+  color: #4a4a4a;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+}
+
+.puzzle-btn:hover {
+  background-color: #ffe194;
+  transform: translateY(-2px);
+}
+
+body, html {
+  overflow-x: hidden;
+}
+
+/* 📱 Responsive */
+@media (max-width: 500px) {
+  .puzzle-grid {
+    grid-template-columns: repeat(3, 70px) !important;
+    grid-template-rows: repeat(3, 70px) !important;
+  }
+
+  .puzzle-title {
+    font-size: 1.8rem;
+  }
+}

@@ -57,7 +57,7 @@
     margin-bottom: 30px;
   }
   
-  .todo-app .task-input input {
+  .todo-app .task-input input[type="text"] {
     flex: 1;
     padding: 15px;
     border: 2px solid var(--text-color);
@@ -65,6 +65,24 @@
     font-size: 16px;
     transition: all 0.3s ease;
     background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .todo-app .task-input .datetime-inputs {
+    display: flex;
+    gap: 10px;
+    min-width: 280px;
+  }
+
+  .todo-app .task-input input[type="date"],
+  .todo-app .task-input input[type="time"] {
+    padding: 15px;
+    border: 2px solid var(--text-color);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
+    min-width: 130px;
   }
   
   .todo-app .task-input input:focus {
@@ -190,10 +208,28 @@
     color: var(--hover-red);
   }
   
-  .todo-app .task-list li span {
+  .todo-app .task-list li .task-content {
     flex: 1;
-    font-size: 16px;
-    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .todo-app .task-list li .task-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    color: var(--header-color);
+  }
+
+  .todo-app .task-list li.completed .task-date {
+    color: var(--button-dark-bg);
+  }
+
+  .todo-app .task-actions {
+    display: flex;
+    gap: 8px;
   }
   
   .todo-app .empty-message {
@@ -228,3 +264,57 @@
         width: 100%;
     }
   }
+
+  .calendar-notice {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.calendar-notice small {
+  color: #856404;
+}
+
+.calendar-status-indicator {
+  margin-top: 15px;
+  padding: 12px 18px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--header-color);
+  background: rgba(255, 255, 255, 0.75);
+  border-left: 4px solid var(--header-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+  animation: fadeSlideIn 0.4s ease;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+/* Optional animated glowing dot */
+.calendar-status-indicator::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background: var(--hover-green);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(59, 177, 67, 0.8);
+}
+
+/* Entry animation */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

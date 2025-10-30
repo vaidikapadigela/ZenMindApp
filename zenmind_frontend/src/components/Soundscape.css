@@ -1,99 +1,202 @@
-/* Theme Colors */
 :root {
-    --background-color: #fefae9; /* Offwhite */
-    --card-background: #fcead9; /* Light Peach */
-    --primary-button: #F2827F; /* Coral pink */
-    --secondary-button-hover: #B3E0D6; /* Light grey teal */
-    --text-color: #455b22; /* Dark olive green */
-    --gold-color: #E5B73B; /* Gold */
-    --background-color2: #f2e6c7; /* Pale */
-    --header-color: #237658; /* Forest green */
-    --somecolor: #F9E076; /* Warm beige */
-    --hover-red: #FF6347; /* Red for Delete button hover */
-    --hover-teal: #81D8D0; /* Light Teal for Undo button hover */
-    --hover-green: #3BB143; /* Bright Green for Complete button hover */
-    --button-light-bg: black; /* Black for lighter backgrounds */
-    --button-dark-bg: white; /* White for darker backgrounds (green) */
+  --zen-primary-color: #4a90e2;
+  --zen-secondary-color: #82b1ff;
+  --zen-text-color: #2c3e50;
+  --zen-bg-light: #fefae9;
+  --zen-bg-overlay: rgba(255, 255, 255, 0.85);
+  --zen-btn: #f2827f;
+  --zen-btn-hover: #3bb143;
+  --zen-shadow: rgba(0, 0, 0, 0.15);
+  --zen-transition: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 🌊 Outer container */
+.zen-soundscape-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: var(--zen-bg-light);
+  overflow: hidden;
+  font-family: "Inter", sans-serif;
+}
+
+/* 🎥 Background video */
+.zen-background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.95;
+}
+
+/* ✨ Main content area */
+.zen-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+}
+
+/* 🌬 Left: Breathing animation */
+.zen-breathing-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.zen-breathing-circle {
+  background: linear-gradient(135deg, var(--zen-primary-color), var(--zen-secondary-color));
+  border-radius: 50%;
+  box-shadow: 0 0 40px rgba(74, 144, 226, 0.3);
+  transition: all 4s var(--zen-transition);
+  position: relative;
+}
+
+.zen-breathing-circle::before,
+.zen-breathing-circle::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.zen-breathing-circle::before {
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  border: 2px solid var(--zen-primary-color);
+  opacity: 0.5;
+  animation: zen-pulse 4s var(--zen-transition) infinite;
+}
+
+.zen-breathing-circle::after {
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  border: 2px solid var(--zen-secondary-color);
+  opacity: 0.3;
+  animation: zen-pulse 4s var(--zen-transition) infinite 0.5s;
+}
+
+.zen-breathing-instruction {
+  color: white;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  animation: zen-fadeInUp 0.8s var(--zen-transition) forwards;
+}
+
+/* 🎧 Right: Controls */
+.zen-control-panel {
+  background: var(--zen-bg-overlay);
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px var(--zen-shadow);
+  max-width: 380px;
+  text-align: center;
+}
+
+.zen-title {
+  font-size: 2rem;
+  color: var(--zen-primary-color);
+  margin-bottom: 20px;
+}
+
+.zen-selector-group {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.zen-selector-group label {
+  font-weight: 600;
+  color: var(--zen-text-color);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.zen-selector-group select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--zen-primary-color);
+  border-radius: 8px;
+  background-color: #fff;
+  color: var(--zen-text-color);
+  font-size: 1rem;
+  margin-bottom: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.zen-selector-group select:focus {
+  border-color: var(--zen-btn);
+  outline: none;
+}
+
+/* 🎵 Button */
+.zen-toggle-btn {
+  padding: 10px 24px;
+  background-color: var(--zen-btn);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.zen-toggle-btn:hover {
+  background-color: var(--zen-btn-hover);
+  transform: scale(1.05);
+}
+
+/* 🌬 Animations */
+@keyframes zen-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
   }
-  
-  /* Soundscape Container */
-  .soundscape-container {
-    position: relative;
-    background-image: url('/public/bg.jpg');
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Arial', sans-serif;
-    background-color: var(--background-color); /* Offwhite */
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
   }
-  
-  .background-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 2;
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
   }
-  
-  .overlay {
-    position: relative;
-    text-align: center;
-    color: var(--text-color); /* Dark olive green */
+}
+
+@keyframes zen-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Responsive */
+@media (max-width: 900px) {
+  .zen-content {
+    flex-direction: column;
+    gap: 40px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-    border-radius: 15px;
-    max-width: 400px;
-    margin: 100px auto;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-  
-  h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: var(--header-color); /* Forest green */
-    text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.8);
+
+  .zen-control-panel {
+    width: 90%;
   }
-  
-  .selectors {
-    margin: 20px 0;
-  }
-  
-  select {
-    padding: 10px;
-    margin: 10px 0;
-    width: 100%;
-    border: 2px solid var(--header-color); /* Forest green */
-    border-radius: 5px;
-    font-size: 1rem;
-    color: var(--text-color); /* Dark olive green */
-    background-color: var(--button-dark-bg); /* White */
-    transition: border-color 0.3s ease;
-  }
-  
-  select:focus {
-    border-color: var(--primary-button); /* Coral pink */
-    outline: none;
-  }
-  
-  button {
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    background-color: var(--primary-button); /* Coral pink */
-    border: none;
-    border-radius: 5px;
-    color: var(--button-dark-bg); /* White */
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  button:hover {
-    background-color: var(--hover-green); /* Bright Green */
-    transform: scale(1.05);
-  }
-  
-  button:active {
-    transform: scale(0.95);
-  }
+}

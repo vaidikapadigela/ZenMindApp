@@ -1,153 +1,168 @@
-/* Navbar.css */
-.navbar {
-    background-color: var(--card-background);
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+:root {
+  --background-color: #fefae9;
+  --card-background: rgba(252, 234, 217, 0.95);
+  --primary-button: #f2827f;
+  --secondary-button-hover: #b3e0d6;
+  --text-color: #455b55;
+  --header-color: #f1c27d;
+}
+
+/* === GLOBAL === */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: var(--background-color);
+}
+
+body {
+  padding-top: 80px; /* space for navbar */
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* === NAVBAR === */
+.zen-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: var(--card-background);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+/* === LOGO === */
+.zen-navbar__logo {
+  color: var(--header-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.zen-navbar__logo:hover {
+  color: var(--primary-button);
+}
+
+/* === CENTER MENU === */
+.zen-navbar__center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.zen-navbar__item {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.zen-navbar__item:hover {
+  color: var(--primary-button);
+}
+
+/* === RIGHT BUTTONS === */
+.zen-navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.zen-navbar__btn {
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: var(--primary-button);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.zen-navbar__btn:hover {
+  background-color: var(--header-color);
+  transform: translateY(-1px);
+}
+
+/* === Hover Box (Stable Version) === */
+.zen-navbar__group {
+  position: relative;
+}
+
+.zen-hoverbox {
+  position: absolute;
+  top: 100%; /* directly below parent item */
+  left: 0;
+  width: max-content;
+  min-width: 220px;
+  background: var(--card-background);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  padding: 1rem 1.5rem;
+  border-radius: 0 0 12px 12px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  z-index: 999;
+  animation: zen-fadeIn 0.2s ease-in-out;
+}
+
+.grid-large {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  width: 600px;
+}
+
+.zen-hoverbox a {
+  text-decoration: none;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
+  backdrop-filter: blur(6px);
+}
+
+.zen-hoverbox a:hover {
+  background: var(--secondary-button-hover);
+  transform: translateY(-2px);
+}
+
+
+/* === LARGER GRID FOR GAMES === */
+.grid-large {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .zen-navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem;
   }
-  
-  .navbar-brand {
-    display: flex;
-    align-items: center;
+
+  .zen-navbar__center {
+    flex-direction: column;
     gap: 1rem;
   }
-  
-  .navbar-logo {
-    color: var(--header-color);
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-decoration: none;
-    transition: color 0.3s ease;
+
+  .zen-hoverbox {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    padding: 1rem;
   }
-  
-  .navbar-logo:hover {
-    color: var(--primary-button);
-  }
-  
-  .navbar-menu {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-  }
-  
-  .navbar-item {
-    color: var(--text-color);
-    text-decoration: none;
-    font-size: 1.1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-  
-  .navbar-item:hover {
-    background-color: var(--background-color2);
-    color: var(--header-color);
-  }
-  
-  .navbar-item.active {
-    color: var(--header-color);
-    font-weight: bold;
-  }
-  
-  .navbar-item.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: var(--primary-button);
-    border-radius: 2px;
-  }
-  
-  .navbar-toggle {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-  }
-  
-  .hamburger {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background-color: var(--text-color);
-    position: relative;
-    transition: all 0.3s ease;
-  }
-  
-  .hamburger::before,
-  .hamburger::after {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 2px;
-    background-color: var(--text-color);
-    transition: all 0.3s ease;
-  }
-  
-  .hamburger::before {
-    top: -8px;
-  }
-  
-  .hamburger::after {
-    bottom: -8px;
-  }
-  
-  @media (max-width: 768px) {
-    .navbar-toggle {
-      display: block;
-    }
-  
-    .navbar-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: var(--card-background);
-      padding: 1rem;
-      flex-direction: column;
-      gap: 1rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-  
-    .navbar-menu.active {
-      display: flex;
-    }
-  
-    .navbar-item {
-      width: 100%;
-      text-align: center;
-    }
-  
-    .navbar-item.active::after {
-      display: none;
-    }
-  
-    .navbar-item.active {
-      background-color: var(--background-color2);
-    }
-  }
-  
-  /* Animation for menu toggle */
-  .navbar-toggle[aria-expanded="true"] .hamburger {
-    transform: rotate(45deg);
-  }
-  
-  .navbar-toggle[aria-expanded="true"] .hamburger::before {
-    transform: rotate(90deg);
-    top: 0;
-  }
-  
-  .navbar-toggle[aria-expanded="true"] .hamburger::after {
-    transform: rotate(90deg);
-    bottom: 0;
-  }
+}

@@ -1,0 +1,117 @@
+@import './Todo.css';
+
+.worry-card {
+  position: relative;
+  text-align: center;
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  min-height: 550px;
+}
+
+/* text intro */
+.worry-subtext {
+  color: var(--header-color);
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+/* wrapper for both dustbin and textbox */
+.worry-zone {
+  position: relative;
+  height: 240px;
+  margin-bottom: 40px;
+}
+
+/* textarea itself */
+.worry-input {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 160px;
+  border: 2px solid var(--text-color);
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 1rem;
+  resize: none;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-color);
+  transition: all 0.4s ease;
+  z-index: 2;
+  transform-origin: center;
+}
+
+.worry-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(35, 118, 88, 0.3);
+}
+
+/* Dustbin placed behind textarea */
+.dustbin {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.5rem;
+  opacity: 0.8;
+  z-index: 1;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* dustbin soft hover motion */
+@keyframes float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* release button */
+.release-button {
+  background-color: var(--primary-button);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.release-button:hover {
+  background-color: var(--background-color2);
+  color: var(--text-color);
+  transform: translateY(-2px);
+}
+
+/* 🧻 crumple + fall into bin animation */
+.crumple {
+  animation: crumpleFall 3.4s ease forwards;
+}
+
+@keyframes crumpleFall {
+  0% {
+    transform: translateX(-50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateX(-50%) scale(0.9) rotate(5deg);
+  }
+  45% {
+    transform: translateX(-50%) scale(0.7) rotate(-10deg);
+    filter: brightness(0.95);
+  }
+  65% {
+    transform: translateX(-50%) scale(0.5) rotate(12deg) translateY(100px);
+    opacity: 0.8;
+  }
+  85% {
+    transform: translateX(-50%) scale(0.3) rotate(-6deg) translateY(160px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-50%) scale(0.2) rotate(0deg) translateY(220px);
+    opacity: 0;
+  }
+}
