@@ -1,3 +1,4 @@
+/* 🌸 Overall Layout */
 .emotion-wrapper {
   display: flex;
   justify-content: center;
@@ -7,16 +8,23 @@
   background: url("/public/bg.jpg") no-repeat center center/cover;
 }
 
+/* 💖 Main Card */
 .emotion-card {
   width: 90%;
   max-width: 480px;
   color: var(--text-color);
   border-radius: 20px;
   padding: 30px;
+  background: rgba(255, 255, 255, 0.75);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   text-align: center;
   backdrop-filter: blur(8px);
   animation: fadeSlideIn 0.6s ease;
+}
+
+.emotion-card h1 {
+  color: var(--header-color);
+  font-weight: 700;
 }
 
 .emotion-subtext {
@@ -24,7 +32,7 @@
   margin-bottom: 20px;
 }
 
-/* --- Mode Selector --- */
+/* 🌿 Mode Selector Buttons */
 .mode-selector {
   display: flex;
   justify-content: center;
@@ -34,12 +42,12 @@
 }
 
 .mode-selector button {
-  background-color: var(--primary-button);
+  background-color: #F2827F; /* your ZenMind pink */
   color: white;
   border: none;
   padding: 10px 20px;
   font-size: 15px;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
@@ -47,33 +55,33 @@
 }
 
 .mode-selector button:hover {
-  background-color: var(--background-color2);
-  color: var(--text-color);
+  background-color: #F5A9A6;
   transform: translateY(-3px);
 }
 
 .mode-selector button.active {
-  background-color: var(--header-color);
+  background-color: #3b7a57; /* pastel green highlight */
   color: white;
-  box-shadow: 0 6px 15px rgba(35, 118, 88, 0.3);
+  box-shadow: 0 6px 15px rgba(59, 122, 87, 0.3);
 }
 
-/* --- Camera --- */
-.camera-box {
+/* 📷 Scan Section */
+.scan-section {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  margin: 10px auto 20px;
+  gap: 10px;
 }
 
-.camera-feed {
+.scan-section video {
   border-radius: 15px;
-  border: 3px solid var(--header-color);
+  border: 3px solid #3b7a57;
   background: #000;
+  width: 320px;
+  height: 240px;
   object-fit: cover;
 }
 
-/* --- Buttons --- */
 .button-group {
   display: flex;
   justify-content: center;
@@ -82,7 +90,7 @@
 }
 
 .button-group button {
-  background-color: var(--primary-button);
+  background-color: #F2827F;
   color: white;
   border: none;
   padding: 10px 18px;
@@ -94,57 +102,99 @@
 }
 
 .button-group button:hover {
-  background-color: var(--background-color2);
-  color: var(--text-color);
+  background-color: #F5A9A6;
+  transform: translateY(-2px);
 }
 
-/* --- Manual Input --- */
-.manual-input-box {
+/* 🖼 Upload Section */
+.upload-section {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  flex-direction: column;
   align-items: center;
-  flex-wrap: wrap;
-  margin-top: 15px;
+  gap: 15px;
 }
 
-.manual-input-box input {
-  flex: 1;
-  min-width: 180px;
-  padding: 10px 14px;
-  border: 2px solid var(--header-color);
-  border-radius: 10px;
-  background: #fff;
-  color: var(--text-color);
-  font-size: 15px;
-  outline: none;
-  transition: 0.3s;
-}
-
-.manual-input-box input:focus {
-  border-color: var(--gold-color);
-  box-shadow: 0 0 8px rgba(218, 165, 32, 0.3);
-}
-
-.manual-input-box button {
-  background-color: var(--primary-button);
+.upload-section input[type="file"] {
+  display: inline-block;
+  background-color: #F2827F;
   color: white;
   border: none;
-  padding: 10px 18px;
-  font-size: 15px;
+  padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  transition: 0.3s;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.manual-input-box button:hover {
-  background-color: var(--background-color2);
-  color: var(--text-color);
+.upload-section input[type="file"]::file-selector-button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-/* --- Result --- */
-.emotion-result {
+.upload-section input[type="file"]:hover {
+  background-color: #F5A9A6;
+  transform: translateY(-2px);
+}
+
+/* 🖼 Uploaded Image Preview */
+.upload-section .preview {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+  object-fit: cover;
+}
+
+/* ✍️ Manual Input Section */
+.manual-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.manual-section input {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 2px solid #F2827F;
+  outline: none;
+  font-size: 15px;
+  min-width: 220px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.manual-section input:focus {
+  border-color: #F2827F;
+  box-shadow: 0 0 8px rgba(242, 130, 127, 0.4);
+}
+
+.manual-section button {
+  background-color: #7ec4a5;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.manual-section button:hover {
+  background-color: #98d1b3;
+  transform: translateY(-2px);
+}
+
+/* 💫 Result Section */
+.result-section {
   margin-top: 25px;
   background: var(--background-color2);
   padding: 15px;
@@ -154,20 +204,43 @@
   animation: fadeIn 0.8s ease;
 }
 
-.glow-text h2 {
-  animation: glowPulse 2s infinite alternate;
+.result-section span {
+  color: #3b7a57;
+  text-transform: capitalize;
 }
 
-/* --- Animations --- */
-@keyframes glowPulse {
-  from {
-    text-shadow: 0 0 5px var(--gold-color);
-  }
-  to {
-    text-shadow: 0 0 20px var(--gold-color);
-  }
+/* 🎮 Suggested Tools Grid */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  justify-items: center;
+  margin-top: 20px;
+  width: 100%;
+  animation: fadeIn 0.8s ease;
 }
 
+.tool-button {
+  background-color: #F2827F;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 180px;
+}
+
+.tool-button:hover {
+  background-color: #F5A9A6;
+  color: #2b3a2b;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* 🌈 Animations */
 @keyframes fadeSlideIn {
   from {
     opacity: 0;
@@ -186,4 +259,27 @@
   to {
     opacity: 1;
   }
+}
+/* 🌸 Custom Upload Button */
+.custom-upload {
+  display: inline-block;
+  background-color: #F2827F; /* your theme pink */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+.custom-upload:hover {
+  background-color: #F5A9A6;
+  transform: translateY(-2px);
+}
+
+/* Hide the native file input */
+.custom-upload input[type="file"] {
+  display: none;
 }

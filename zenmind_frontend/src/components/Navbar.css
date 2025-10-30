@@ -25,6 +25,7 @@
   text-decoration: none;
   transition: color 0.3s ease;
 }
+
 .navbar-logo:hover {
   color: var(--primary-button);
 }
@@ -61,7 +62,7 @@
 
 /* Remove hover color on center options */
 .dropdown-toggle:hover {
-  color: var(--text-color); /* keep it same color even on hover */
+  color: var(--text-color);
 }
 
 /* Arrow rotation */
@@ -69,6 +70,7 @@
   font-size: 0.8rem;
   transition: transform 0.2s ease;
 }
+
 .arrow.open {
   transform: rotate(180deg);
 }
@@ -95,42 +97,54 @@
   padding: 0.6rem 1rem;
   transition: background 0.2s ease;
 }
-.navbar-center .dropdown-toggle:hover {
-  color: var(--text-color) !important;
-  background: none !important;
-}
 
-/* Keep dropdown item hover subtle (not green) */
+/* Keep dropdown item hover subtle */
 .dropdown-item:hover {
   background-color: var(--background-color2);
-  color: var(--text-color); /* no color change */
+  color: var(--text-color);
 }
 
-/* === Right: Auth Buttons === */
+/* === Right: Profile + Logout Buttons === */
 .navbar-right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.8rem; /* balanced spacing */
   white-space: nowrap;
-  min-width: 0;
+  flex-direction: row;
 }
 
+.navbar-right a {
+  text-decoration: none;
+}
+
+/* Profile + Logout Buttons */
+.profile-button,
 .logout-button {
-  background-color: var(--primary-button);
-  color: white;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: var(--primary-button);
+  color: #fff;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
-  /* font-weight: 600; */
-  transition: all 0.3s ease;
-}
-.logout-button:hover {
-  background-color: var(--header-color);
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+  line-height: 1;
+  vertical-align: middle; /* ensures both align perfectly */
 }
 
-/* === Mobile Menu === */
+.profile-button:hover,
+.logout-button:hover {
+  background-color: var(--header-color);
+  transform: translateY(-1px);
+}
+
+/* === Mobile Menu Toggle === */
 .navbar-toggle {
   display: none;
   background: none;
@@ -147,6 +161,7 @@
   position: relative;
   transition: all 0.3s ease;
 }
+
 .hamburger::before,
 .hamburger::after {
   content: '';
@@ -156,13 +171,31 @@
   background-color: var(--text-color);
   transition: all 0.3s ease;
 }
-.hamburger::before { top: -8px; }
-.hamburger::after { bottom: -8px; }
 
+.hamburger::before {
+  top: -8px;
+}
+
+.hamburger::after {
+  bottom: -8px;
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Responsive === */
 @media (max-width: 768px) {
+  .navbar {
+    grid-template-columns: 1fr;
+  }
+
   .navbar-menu {
     display: none;
   }
+
   .navbar-menu.active {
     display: flex;
     flex-direction: column;
@@ -171,91 +204,7 @@
     padding: 1rem;
     gap: 1rem;
   }
-}
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* === Right Section === */
-.navbar-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-  flex-direction: row;
-}
-
-.navbar-right a {
-  display: inline-flex;
-  text-decoration: none;
-}
-
-/* Profile + Login + Logout Buttons aligned */
-.profile-button,
-.logout-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-  background-color: var(--primary-button);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-/* Profile and Logout buttons - same size */
-.profile-button {
-  padding: 0.5rem 1.2rem;
-  font-size: 1rem;
-}
-
-.logout-button {
-  padding: 0.5rem 1.2rem;
-  font-size: 1rem;
-  background-color: var(--primary-button);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-/* Hover */
-.profile-button:hover,
-.logout-button:hover {
-  background-color: var(--header-color);
-}
-
-/* Login button when used as link */
-.navbar-right a.logout-button {
-  text-decoration: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar {
-    grid-template-columns: 1fr;
-  }
-  
-  .navbar-menu.active {
-    display: flex;
-    flex-direction: column;
-  }
-  
   .navbar-right {
     flex-direction: row;
     justify-content: right;

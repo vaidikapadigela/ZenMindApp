@@ -101,9 +101,7 @@ const Navbar = () => {
                   <Link to="/PomodoroTimer" className="dropdown-item">
                     Pomodoro Timer
                   </Link>
-                  <Link to="/Emotion" className="dropdown-item">
-                    Emotion Detection
-                  </Link>
+                  
                 </div>
               )}
             </div>
