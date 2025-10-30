@@ -296,3 +296,26 @@
     box-shadow: var(--shadow-sm);
   }
 }
+/* --- Reward Section --- */
+.reward-card {
+  background: linear-gradient(135deg, #fff7d1, #ffe9a3);
+  border: 2px solid var(--gold-color);
+  box-shadow: 0 0 12px rgba(229, 183, 59, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reward-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 0 20px rgba(229, 183, 59, 0.5);
+}
+
+.reward-card.locked {
+  background: #f0f0f0;
+  color: #999;
+  border: 2px dashed #ccc;
+  box-shadow: none;
+}
+
+.reward-card.locked h3 {
+  color: #777;
+}

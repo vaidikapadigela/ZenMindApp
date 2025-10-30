@@ -211,7 +211,7 @@ const JournalEntries = () => {
           ) : (
             <div className="no-entries">
               <p>No entries found. Adjust your filters or start journaling!</p>
-              <Link to="/" className="primary-button">Create New Entry</Link>
+              <Link to="/Journaling" className="primary-button">Create New Entry</Link>
             </div>
           )}
         </div>

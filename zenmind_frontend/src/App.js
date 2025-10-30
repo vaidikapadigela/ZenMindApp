@@ -13,6 +13,7 @@ import MoodHeatmap from './components/MoodHeatmap';
 import JournalEntries from './components/JournalEntries';
 import { AuthProvider, AuthContext } from './components/AuthContext';
 import { JournalProvider } from './components/JournalContext';
+import { TodoProvider } from './components/TodoContext';
 import PomodoroTimer from './components/PomodoroTimer';
 import EmotionDetectionPage from './components/EmotionDetectionPage';
 import WorryRelease from './components/WorryRelease';
@@ -174,9 +175,11 @@ function App() {
   return (
     <AuthProvider>
       <JournalProvider>
+        <TodoProvider>  
         <Router>
           <AppRoutes />
         </Router>
+        </TodoProvider>
       </JournalProvider>
     </AuthProvider>
   );

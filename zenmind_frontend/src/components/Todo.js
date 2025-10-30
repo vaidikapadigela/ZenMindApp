@@ -3,12 +3,13 @@ import { FaCheck, FaUndo, FaTrash, FaCalendar } from 'react-icons/fa';
 import { useAuth } from './AuthContext';
 import { calendarService } from '../services/SimplifiedCalendarService';
 import "./Todo.css";
+import { useTodo } from "./TodoContext";
 
 const Todo = () => {
 	const [task, setTask] = useState("");
 	const [taskDate, setTaskDate] = useState("");
 	const [taskTime, setTaskTime] = useState("09:00");
-	const [tasks, setTasks] = useState([]);
+	const { tasks, setTasks } = useTodo();
 	const [view, setView] = useState("all");
 	const [syncStatus, setSyncStatus] = useState('');
 	const { user } = useAuth();

@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const positiveMessages = [
+    "🌿 Take a deep breath — today’s a new opportunity to grow.",
+    "Glad to see you 🌸 Let’s make today peaceful and productive!",
+    "Hello there! ☀️ You’re doing amazing — one mindful step at a time.",
+    "💫 Remember to take a moment for yourself today.",
+    "You’re here, and that’s enough 🌷 Let’s create calm together.",
+    "🌈 Ready to nurture your mind and soul?",
+    "🌻 Let’s cultivate some positive vibes today.",
+    "🌼 Your journey to mindfulness continues.",
+  ];
+
+  useEffect(() => {
+    if (localStorage.getItem("justLoggedIn") === "true") {
+      const randomMsg = positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
+      setMessage(randomMsg);
+      setShowPopup(true);
+      localStorage.removeItem("justLoggedIn");
+    }
+  }, []);
+
+  const closePopup = () => setShowPopup(false);
+
+  
   const mindfulnessFeatures = [
     { title: "Worry Release", description: "Let go of your worries with guided release prompts.", icon: "🌤️", path: "/WorryRelease" },
     { title: "Gratitude Log", description: "Reflect daily and nurture gratitude for the little things.", icon: "🙏", path: "/GratitudeLog" },
@@ -146,6 +172,16 @@ const Home = () => {
           <Link to="/Emotion" className="cta-button">Detect Emotion & Get Suggestions</Link>
         </div>
       </section>
+
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-card">
+            <p className="popup-message">{message}</p>
+            <button className="popup-button" onClick={closePopup}>Got it 🌿</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

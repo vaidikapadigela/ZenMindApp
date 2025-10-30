@@ -99,63 +99,75 @@ const EmotionDetectionPage = () => {
   };
 
   // ✅ Emotion-based tool suggestions
-  const getSuggestions = (emotion) => {
-    const e = emotion.toLowerCase();
-    const tools = {
-      happy: [
-        { name: "Journaling", path: "/Journaling" },
-        { name: "Soundscape", path: "/Soundscape" },
-        { name: "Tic Tac Toe", path: "/TicTacToe" },
-        { name: "Pomodoro Timer", path: "/PomodoroTimer" },
-        { name: "To-Do List", path: "/Todo" },
-        { name: "Gratitude Log", path: "/GratitudeLog" },
-      ],
-      sad: [
-        { name: "Breathing Exercise", path: "/Breathing-exercise" },
-        { name: "Soundscape", path: "/Soundscape" },
-        { name: "Zen Memory Game", path: "/ZenMemoryGame" },
-        { name: "Meditation Timer", path: "/Meditation-timer" },
-        { name: "Gratitude Log", path: "/GratitudeLog" },
-      ],
-      angry: [
-        { name: "Breathing Exercise", path: "/Breathing-exercise" },
-        { name: "Soundscape", path: "/Soundscape" },
-        { name: "Journaling", path: "/Journaling" },
-        { name: "Pomodoro Timer", path: "/PomodoroTimer" },
-      ],
-      fearful: [
-        { name: "Meditation Timer", path: "/Meditation-timer" },
-        { name: "Soundscape", path: "/Soundscape" },
-        { name: "Breathing Exercise", path: "/Breathing-exercise" },
-        { name: "Worry Release", path: "/WorryRelease" },
-      ],
-      surprised: [
-        { name: "Tic Tac Toe", path: "/TicTacToe" },
-        { name: "Maze Game", path: "/MazeGame" },
-        { name: "Game 2048", path: "/Game2048" },
-        { name: "Pomodoro Timer", path: "/PomodoroTimer" },
-      ],
-      disgusted: [
-        { name: "Soundscape", path: "/Soundscape" },
-        { name: "Breathing Exercise", path: "/Breathing-exercise" },
-        { name: "Colouring Book", path: "/ColouringBook" },
-      ],
-      neutral: [
-        { name: "Journaling", path: "/Journaling" },
-        { name: "Soundscape", path: "/Soundscape" },
-        { name: "Breathing Exercise", path: "/Breathing-exercise" },
-        { name: "Zen Memory Game", path: "/ZenMemoryGame" },
-        { name: "Tic Tac Toe", path: "/TicTacToe" },
-        { name: "Pomodoro Timer", path: "/PomodoroTimer" },
-        { name: "To-Do List", path: "/Todo" },
-        { name: "Meditation Timer", path: "/Meditation-timer" },
-        { name: "Colouring Book", path: "/ColouringBook" },
-        { name: "Breakout Game", path: "/BreakoutGame" },
-        { name: "Clicker Game", path: "/ClickerGame" },
-      ],
-    };
-    return tools[e] || tools.neutral;
+  // ✅ Emotion-based tool suggestions (updated)
+const getSuggestions = (emotion) => {
+  const e = emotion.toLowerCase();
+  const tools = {
+    happy: [
+      { name: "Journaling", path: "/Journaling" },
+      { name: "Soundscape", path: "/Soundscape" },
+      { name: "Tic Tac Toe", path: "/TicTacToe" },
+      { name: "Pomodoro Timer", path: "/PomodoroTimer" },
+      { name: "To-Do List", path: "/Todo" },
+      { name: "Gratitude Log", path: "/GratitudeLog" },
+      { name: "Flappy Bird", path: "/FlappyBird" }, // 🎮 New
+    ],
+    sad: [
+      { name: "Breathing Exercise", path: "/Breathing-exercise" },
+      { name: "Soundscape", path: "/Soundscape" },
+      { name: "Zen Memory Game", path: "/ZenMemoryGame" },
+      { name: "Meditation Timer", path: "/Meditation-timer" },
+      { name: "Gratitude Log", path: "/GratitudeLog" },
+      { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" }, // 🧩 New
+    ],
+    angry: [
+      { name: "Breathing Exercise", path: "/Breathing-exercise" },
+      { name: "Soundscape", path: "/Soundscape" },
+      { name: "Journaling", path: "/Journaling" },
+      { name: "Pomodoro Timer", path: "/PomodoroTimer" },
+      { name: "Snake Game", path: "/SnakeGame" }, // 🐍 New
+    ],
+    fearful: [
+      { name: "Meditation Timer", path: "/Meditation-timer" },
+      { name: "Soundscape", path: "/Soundscape" },
+      { name: "Breathing Exercise", path: "/Breathing-exercise" },
+      { name: "Worry Release", path: "/WorryRelease" },
+      { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" }, // 🧩 New
+    ],
+    surprised: [
+      { name: "Tic Tac Toe", path: "/TicTacToe" },
+      { name: "Maze Game", path: "/MazeGame" },
+      { name: "Game 2048", path: "/Game2048" },
+      { name: "Pomodoro Timer", path: "/PomodoroTimer" },
+      { name: "Flappy Bird", path: "/FlappyBird" }, // 🎮 New
+      { name: "Snake Game", path: "/SnakeGame" },   // 🐍 New
+    ],
+    disgusted: [
+      { name: "Soundscape", path: "/Soundscape" },
+      { name: "Breathing Exercise", path: "/Breathing-exercise" },
+      { name: "Colouring Book", path: "/ColouringBook" },
+      { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" }, // 🧩 New
+    ],
+    neutral: [
+      { name: "Journaling", path: "/Journaling" },
+      { name: "Soundscape", path: "/Soundscape" },
+      { name: "Breathing Exercise", path: "/Breathing-exercise" },
+      { name: "Zen Memory Game", path: "/ZenMemoryGame" },
+      { name: "Tic Tac Toe", path: "/TicTacToe" },
+      { name: "Pomodoro Timer", path: "/PomodoroTimer" },
+      { name: "To-Do List", path: "/Todo" },
+      { name: "Meditation Timer", path: "/Meditation-timer" },
+      { name: "Colouring Book", path: "/ColouringBook" },
+      { name: "Breakout Game", path: "/BreakoutGame" },
+      { name: "Clicker Game", path: "/ClickerGame" },
+      { name: "Flappy Bird", path: "/FlappyBird" },   // 🎮 New
+      { name: "Snake Game", path: "/SnakeGame" },     // 🐍 New
+      { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" }, // 🧩 New
+    ],
   };
+  return tools[e] || tools.neutral;
+};
+
 
   return (
     <div className="emotion-wrapper">

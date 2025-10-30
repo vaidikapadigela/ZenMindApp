@@ -88,6 +88,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       localStorage.setItem('user', JSON.stringify(userToSave));
+      localStorage.setItem("justLoggedIn", "true");
       setUser(userToSave);
       setIsLoggedIn(true);
       return userToSave;
