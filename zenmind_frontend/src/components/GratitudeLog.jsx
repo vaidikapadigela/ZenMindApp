@@ -4,6 +4,7 @@ import "./GratitudeLog.css";
 const GratitudeLog = () => {
   const [entries, setEntries] = useState(["", "", ""]);
   const [savedLogs, setSavedLogs] = useState([]);
+  const token = localStorage.getItem('token');
 
   const handleChange = (index, value) => {
     const updated = [...entries];
@@ -16,6 +17,7 @@ const GratitudeLog = () => {
       alert("Please fill in all three gratitude entries 🌸");
       return;
     }
+    
     setSavedLogs([...savedLogs, { date: new Date(), items: entries }]);
     setEntries(["", "", ""]);
   };

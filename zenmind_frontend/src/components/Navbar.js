@@ -4,8 +4,15 @@ import "./Navbar.css";
 import { AuthContext } from "./AuthContext";
 
 const Navbar = () => {
-  const [activeBox, setActiveBox] = useState(null);
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const location = useLocation();
+  let { isLoggedIn, logout } = useContext(AuthContext);
+  const token = localStorage.getItem("token");
+  isLoggedIn = !!token;
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleDropdown = (name) =>
+    setActiveDropdown(activeDropdown === name ? null : name);
 
   const handleLogout = () => {
     logout();

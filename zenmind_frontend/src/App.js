@@ -29,10 +29,13 @@ import SnakeGame from './components/ZenGames/SnakeGame';
 import FlappyBird from './components/ZenGames/FlappyBird';
 import SlidingPuzzleGame from './components/ZenGames/SlidingPuzzleGame';
 import { useContext } from 'react';
+import Register from './components/Register';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
-  const { isLoggedIn } = useContext(AuthContext);
+  let { isLoggedIn } = useContext(AuthContext);
+  const token = localStorage.getItem("token");
+  isLoggedIn = !!token;
   
   if (!isLoggedIn) {
     return <Navigate to="/Login" />;
@@ -48,6 +51,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/Register" element={<Register />} />
         
         {/* Protected Routes */}
         <Route path="/Journaling" element={

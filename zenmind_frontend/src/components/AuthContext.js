@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { calendarService } from '../services/SimplifiedCalendarService';
+import { set } from 'mongoose';
 
 export const AuthContext = createContext();
 
@@ -16,10 +17,12 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState(null);
   
   // Check localStorage on initial load and initialize Google API
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
     if (savedUser) {
       const userData = JSON.parse(savedUser);
       setUser(userData);
@@ -30,32 +33,13 @@ export const AuthProvider = ({ children }) => {
         calendarService.init().catch(console.error);
       }
     }
+    if(token){
+      setToken(token);
+      setIsLoggedIn(true);
+    }
     setIsLoading(false);
   }, []);
 
-  // Email/Password validation (you can replace this with actual backend API call)
-  const validateEmailPassword = async (email, password) => {
-    // TODO: Replace this with actual API call to your backend
-    // For now, this is a mock implementation
-    // Example: const response = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-    
-    // Mock validation - replace with real backend call
-    if (email && password) {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // For demo purposes, accept any email/password
-      // In production, this should validate against your backend
-      return {
-        email: email,
-        displayName: email.split('@')[0], // Use email username as display name
-        isGoogleUser: false,
-        uid: `email_${Date.now()}`, // Generate a unique ID
-      };
-    }
-    
-    throw new Error('Invalid email or password');
-  };
 
   // Login function - supports both Google and Email/Password
   const login = async (userData) => {
@@ -81,10 +65,6 @@ export const AuthProvider = ({ children }) => {
           accessToken: userData.accessToken,
           isGoogleUser: true,
         };
-      } else {
-        // Email/Password login
-        const validatedUser = await validateEmailPassword(userData.email, userData.password);
-        userToSave = validatedUser;
       }
 
       localStorage.setItem('user', JSON.stringify(userToSave));
@@ -111,6 +91,9 @@ export const AuthProvider = ({ children }) => {
         if (window.google?.accounts?.id) {
           window.google.accounts.id.disableAutoSelect();
         }
+      }else{
+        localStorage.removeItem('token');
+        setToken(null);
       }
     } catch (error) {
       console.error('Error signing out:', error);

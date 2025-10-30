@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, use } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './Login.css';
 import { AuthContext } from './AuthContext';
+import axios from 'axios';
 
 const Login = () => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -142,22 +144,33 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setIsLoading(true);
 
     try {
-      if (!email || !password) {
-        setErrorMessage('Please enter both email and password');
+      if (!username || !password) {
+        setErrorMessage('Please enter both username and password');
+        setIsLoading(false);
         return;
       }
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        username,
+        password,
+      });
 
-      await login({ email, password, isGoogleUser: false });
-      navigate('/');
+      if (response.data) {
+        // Save token
+        localStorage.setItem('token', response.data.token);
+
+        navigate('/');
+      } else {
+        setErrorMessage(response.data.message || 'Invalid credentials');
+      }
     } catch (err) {
-      console.error('Email/password login failed:', err);
-      setErrorMessage(err.message || 'Failed to login. Please try again.');
+      console.error('Login error:', err);
+      setErrorMessage(err.response?.data?.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -191,13 +204,13 @@ const Login = () => {
           {errorMessage && <div className="error-message">{errorMessage}</div>}
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
               required
             />
           </div>
@@ -241,6 +254,7 @@ const Login = () => {
             type="submit" 
             className={`login-button ${isLoading ? 'loading' : ''}`} 
             disabled={isLoading}
+            
           >
             {isLoading ? 'Signing in...' : 'Sign In with Email'}
           </button>
@@ -268,7 +282,7 @@ const Login = () => {
               </button>
             </div>
           )}
-          {/* <p>Don't have an account? <Link to="/register" className="register-link">Sign up</Link></p> */}
+          <p>Don't have an account? <Link to="/register" className="register-link">Sign up</Link></p>
         </div>
       </div>
 

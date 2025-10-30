@@ -2,313 +2,261 @@ import React, { useEffect, useState } from 'react';
 import { FaCheck, FaUndo, FaTrash, FaCalendar } from 'react-icons/fa';
 import { useAuth } from './AuthContext';
 import { calendarService } from '../services/SimplifiedCalendarService';
+import axios from 'axios';
 import "./Todo.css";
 
 const Todo = () => {
-	const [task, setTask] = useState("");
-	const [taskDate, setTaskDate] = useState("");
-	const [taskTime, setTaskTime] = useState("09:00");
-	const [tasks, setTasks] = useState([]);
-	const [view, setView] = useState("all");
-	const [syncStatus, setSyncStatus] = useState('');
-	const { user } = useAuth();
+  const [task, setTask] = useState("");
+  const [taskDate, setTaskDate] = useState("");
+  const [taskTime, setTaskTime] = useState("09:00");
+  const [tasks, setTasks] = useState([]);
+  const [view, setView] = useState("all");
+  const [syncStatus, setSyncStatus] = useState('');
+  const { user } = useAuth();
+  const token = localStorage.getItem("token");
+  // 🟢 Fetch tasks from backend or localStorage
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (user?.isGoogleUser) {
+        // Google user → use localStorage
+        const storedTasks = JSON.parse(localStorage.getItem("tasks"));
+        if (storedTasks) setTasks(storedTasks);
+      } else if (token) {
+        // Normal user → fetch from backend
+        try {
+          const res = await axios.get("http://localhost:5000/api/todos", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setTasks(res.data);
+        } catch (error) {
+          console.error("Failed to fetch tasks:", error);
+        }
+      }
+    };
 
-	// Fetch tasks from localStorage when the app loads
-	useEffect(() => {
-		const storedTasks = JSON.parse(localStorage.getItem("tasks"));
-		if (storedTasks) {
-			setTasks(storedTasks);
-		}
-	}, []);
+    fetchTasks();
+  }, [user]);
 
-	// Save tasks to localStorage whenever the tasks state changes
-	useEffect(() => {
-		if (tasks.length > 0) {
-			localStorage.setItem("tasks", JSON.stringify(tasks));
-		} else {
-			localStorage.removeItem("tasks");
-		}
-	}, [tasks]);
+  // 🟢 Save tasks to localStorage for Google users only
+  useEffect(() => {
+    if (user?.isGoogleUser) {
+      if (tasks.length > 0) {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      } else {
+        localStorage.removeItem("tasks");
+      }
+    }
+  }, [tasks, user]);
 
-	// Handle input changes
-	const handleInputChange = (e) => {
-		setTask(e.target.value);
-	};
+  // 🟢 Add Task
+  const addTask = async () => {
+    if (!task.trim()) {
+      alert('Please enter a task');
+      return;
+    }
 
-	// Handle adding a new task
-	const addTask = async () => {
-		if (!task.trim()) {
-			alert('Please enter a task');
-			return;
-		}
+    const newTask = {
+      text: task,
+      completed: false,
+      date: taskDate || null,
+      time: taskTime || null,
+    };
 
-		const newTask = {
-			text: task,
-			completed: false,
-			addedDate: new Date().toISOString()
-		};
+    // 🟢 Case 1: Google user → Sync to Google Calendar
+    if (user?.isGoogleUser && user?.accessToken && taskDate) {
+      const dueDateTime = new Date(`${taskDate}T${taskTime}`);
+      if (isNaN(dueDateTime.getTime())) {
+        alert('Invalid date/time selected.');
+        return;
+      }
 
-		// Add date/time if provided
-		if (taskDate) {
-			const dueDateTime = new Date(`${taskDate}T${taskTime}`);
-			
-			// Validate the date
-			if (isNaN(dueDateTime.getTime())) {
-				alert('Invalid date/time selected. Please try again.');
-				return;
-			}
+      try {
+        setSyncStatus('Syncing to calendar...');
+        const calendarResult = await calendarService.addTodo({
+          title: task,
+          description: "Todo from ZenMind",
+          dueDate: dueDateTime
+        });
 
-			newTask.dueDate = taskDate;
-			newTask.dueTime = taskTime;
-			newTask.dueDateTime = dueDateTime.toISOString();
+        newTask.dueDateTime = dueDateTime.toISOString();
+        newTask.calendarEventId = calendarResult.id;
+        newTask.calendarLink = calendarResult.link;
+        setSyncStatus('✓ Synced to Google Calendar');
+      } catch (error) {
+        console.error("Calendar sync failed:", error);
+        setSyncStatus('⚠️ Calendar sync failed (saved locally)');
+      } finally {
+        setTimeout(() => setSyncStatus(''), 3000);
+      }
 
-			// Try to add to Google Calendar if user is logged in with Google
-			if (user?.isGoogleUser && user?.accessToken) {
-				setSyncStatus('Syncing to calendar...');
-				try {
-					const calendarResult = await calendarService.addTodo({
-						title: task,
-						description: "Todo task from ZenMind",
-						dueDate: dueDateTime
-					});
-					
-					newTask.calendarEventId = calendarResult.id;
-					newTask.calendarLink = calendarResult.link;
-					setSyncStatus('✓ Synced to Google Calendar');
-					
-					setTimeout(() => setSyncStatus(''), 3000);
-				} catch (error) {
-					console.error('Failed to add task to calendar:', error);
-					setSyncStatus('⚠️ Calendar sync failed (saved locally)');
-					setTimeout(() => setSyncStatus(''), 5000);
-				}
-			}
-		}
+      setTasks([...tasks, newTask]);
+      localStorage.setItem("tasks", JSON.stringify([...tasks, newTask]));
+    }
 
-		// Add task to list
-		setTasks([...tasks, newTask]);
-		setTask("");
-		setTaskDate("");
-		setTaskTime("09:00");
-	};
+    // 🟢 Case 2: Normal user → Save to DB via backend
+    else if (token) {
+      try {
+        const res = await axios.post(
+          "http://localhost:5000/api/todos",
+          newTask,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setTasks([...tasks, res.data]);
+      } catch (error) {
+        console.error("Failed to add task to DB:", error);
+        alert("Failed to save task. Please try again.");
+      }
+    }
 
-	// Handle completing a task
-	const toggleTaskCompletion = async (index) => {
-		const updatedTasks = [...tasks];
-		const taskItem = updatedTasks[index];
-		taskItem.completed = !taskItem.completed;
+    // Reset inputs
+    setTask("");
+    setTaskDate("");
+    setTaskTime("09:00");
+  };
 
-		// Update calendar event if exists
-		if (user?.isGoogleUser && user?.accessToken && taskItem.calendarEventId && taskItem.dueDateTime) {
-			try {
-				await calendarService.updateTodo(taskItem.calendarEventId, {
-					title: `${taskItem.completed ? '[DONE] ' : ''}${taskItem.text}`,
-					description: taskItem.completed ? "Completed todo from ZenMind" : "Todo task from ZenMind",
-					dueDate: new Date(taskItem.dueDateTime)
-				});
-			} catch (error) {
-				console.error('Failed to update task in calendar:', error);
-			}
-		}
+  // 🟢 Toggle Complete
+  const toggleTaskCompletion = async (index) => {
+    const updatedTasks = [...tasks];
+    const taskItem = updatedTasks[index];
+    taskItem.completed = !taskItem.completed;
 
-		setTasks(updatedTasks);
-	};
+    // Update in DB if normal user
+    if (token && !user?.isGoogleUser && taskItem._id) {
+      try {
+        await axios.put(
+          `http://localhost:5000/api/todos/${taskItem._id}`,
+          { completed: taskItem.completed },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (error) {
+        console.error("Failed to update task:", error);
+      }
+    }
 
-	// Handle deleting a task
-	const deleteTask = async (index) => {
-		const taskItem = tasks[index];
-		
-		// Delete from calendar if exists
-		if (user?.isGoogleUser && user?.accessToken && taskItem.calendarEventId) {
-			setSyncStatus('Deleting from calendar...');
-			try {
-				await calendarService.deleteTodo(taskItem.calendarEventId);
-				setSyncStatus('✓ Deleted from calendar');
-				setTimeout(() => setSyncStatus(''), 3000);
-			} catch (error) {
-				console.error('Failed to delete task from calendar:', error);
-				setSyncStatus('⚠️ Calendar delete failed');
-				setTimeout(() => setSyncStatus(''), 3000);
-			}
-		}
+    // Update in Google Calendar if Google user
+    if (user?.isGoogleUser && user?.accessToken && taskItem.calendarEventId) {
+      try {
+        await calendarService.updateTodo(taskItem.calendarEventId, {
+          title: `${taskItem.completed ? '[DONE] ' : ''}${taskItem.text}`,
+          description: taskItem.completed
+            ? "Completed todo from ZenMind"
+            : "Todo task from ZenMind",
+          dueDate: new Date(taskItem.dueDateTime)
+        });
+      } catch (error) {
+        console.error("Calendar update failed:", error);
+      }
+    }
 
-		const updatedTasks = tasks.filter((_, i) => i !== index);
-		setTasks(updatedTasks);
-	};
+    setTasks(updatedTasks);
+  };
 
-	// Filter and sort tasks
-	const filteredTasks = tasks
-		.filter(taskItem => {
-			if (view === "all") return true;
-			if (view === "completed") return taskItem.completed;
-			return !taskItem.completed;
-		})
-		.sort((a, b) => {
-			if (a.dueDateTime && b.dueDateTime) {
-				return new Date(a.dueDateTime) - new Date(b.dueDateTime);
-			}
-			if (a.dueDateTime) return -1;
-			if (b.dueDateTime) return 1;
-			if (a.completed !== b.completed) return a.completed ? 1 : -1;
-			return new Date(b.addedDate) - new Date(a.addedDate);
-		});
+  // 🟢 Delete Task
+  const deleteTask = async (index) => {
+    const taskItem = tasks[index];
 
-	return (
-		<div className="todo-wrapper">
-			<div className="todo-app">
-				<h1>To-Do App</h1>
+    // Delete from DB if normal user
+    if (token && !user?.isGoogleUser && taskItem._id) {
+      try {
+        await axios.delete(`http://localhost:5000/api/todos/${taskItem._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } catch (error) {
+        console.error("Failed to delete task from DB:", error);
+      }
+    }
 
-				{/* Calendar sync status indicator */}
-				{user?.isGoogleUser && user?.accessToken && (
-					<div className="calendar-status-indicator">
-						Calendar sync enabled
-					</div>
-					
-				)}
-				<br></br>
-				<br></br>
+    // Delete from Calendar if Google user
+    if (user?.isGoogleUser && user?.accessToken && taskItem.calendarEventId) {
+      try {
+        setSyncStatus('Deleting from calendar...');
+        await calendarService.deleteTodo(taskItem.calendarEventId);
+        setSyncStatus('✓ Deleted from calendar');
+      } catch (error) {
+        console.error("Failed to delete from calendar:", error);
+        setSyncStatus('⚠️ Calendar delete failed');
+      } finally {
+        setTimeout(() => setSyncStatus(''), 3000);
+      }
+    }
 
+    const updatedTasks = tasks.filter((_, i) => i !== index);
+    setTasks(updatedTasks);
+  };
 
-				{user?.isGoogleUser && !user?.accessToken && (
-					<div className="calendar-warning">
-					Calendar sync disabled. Login with gmail to enable Google Calendar sync.
-					</div>
-				)}
+  // 🟢 Filter tasks
+  const filteredTasks = tasks.filter(t =>
+    view === "all" ? true :
+      view === "completed" ? t.completed :
+        !t.completed
+  );
 
-				{/* Task input */}
-				<div className="task-input">
-					<input
-						type="text"
-						value={task}
-						onChange={handleInputChange}
-						placeholder="Enter a task"
-						onKeyPress={(e) => e.key === 'Enter' && addTask()}
-					/>
-					<div className="datetime-inputs">
-						<input
-							type="date"
-							value={taskDate}
-							onChange={(e) => setTaskDate(e.target.value)}
-							min={new Date().toISOString().split('T')[0]}
-						/>
-						<input
-							type="time"
-							value={taskTime}
-							onChange={(e) => setTaskTime(e.target.value)}
-						/>
-					</div>
-					<button onClick={addTask}>Add Task</button>
-				</div>
+  return (
+    <div className="todo-wrapper">
+      <div className="todo-app">
+        <h1>To-Do App</h1>
 
-				{/* Sync status message */}
-				{syncStatus && (
-					<div className={`sync-status ${syncStatus.includes('✓') ? 'success' : syncStatus.includes('⚠️') ? 'warning' : 'info'}`}>
-						{syncStatus}
-					</div>
-				)}
+        {user?.isGoogleUser && <div className="calendar-status-indicator">Calendar sync enabled</div>}
 
-				{/* View Toggle Buttons */}
-				<div className="view-toggle">
-					<button
-						onClick={() => setView("all")}
-						className={view === "all" ? "active" : ""}
-					>
-						All Tasks
-					</button>
-					<button
-						onClick={() => setView("completed")}
-						className={view === "completed" ? "active" : ""}
-					>
-						Completed Tasks
-					</button>
-					<button
-						onClick={() => setView("pending")}
-						className={view === "pending" ? "active" : ""}
-					>
-						Pending Tasks
-					</button>
-				</div>
+        <div className="task-input">
+          <input
+            type="text"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+            placeholder="Enter a task"
+            onKeyPress={(e) => e.key === 'Enter' && addTask()}
+          />
+          <div className="datetime-inputs">
+            <input
+              type="date"
+              value={taskDate}
+              onChange={(e) => setTaskDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+            />
+            <input
+              type="time"
+              value={taskTime}
+              onChange={(e) => setTaskTime(e.target.value)}
+            />
+          </div>
+          <button onClick={addTask}>Add Task</button>
+        </div>
 
-				{/* Task List */}
-				<div className="task-list-container">
-					<h2>
-						{view === "all"
-							? "All Tasks"
-							: view === "completed"
-							? "Completed Tasks"
-							: "Pending Tasks"}
-					</h2>
-					<ul className="task-list">
-						{filteredTasks.length === 0 ? (
-							<div className="empty-message">
-								<p>No tasks to display</p>
-							</div>
-						) : (
-							filteredTasks.map((taskItem, index) => {
-								const originalIndex = tasks.findIndex(t => t === taskItem);
-								return (
-									<li key={originalIndex} className={taskItem.completed ? "completed" : ""}>
-										<div className="task-content">
-											<span className="task-text">{taskItem.text}</span>
-											{taskItem.dueDateTime && (
-												<span className="task-date">
-													<FaCalendar /> 
-													{taskItem.calendarLink ? (
-														<a 
-															href={taskItem.calendarLink} 
-															target="_blank" 
-															rel="noopener noreferrer"
-															title="Open in Google Calendar"
-														>
-															{new Date(taskItem.dueDateTime).toLocaleString('en-US', {
-																weekday: 'short',
-																month: 'short',
-																day: 'numeric',
-																hour: 'numeric',
-																minute: '2-digit'
-															})}
-														</a>
-													) : (
-														<span>
-															{new Date(taskItem.dueDateTime).toLocaleString('en-US', {
-																weekday: 'short',
-																month: 'short',
-																day: 'numeric',
-																hour: 'numeric',
-																minute: '2-digit'
-															})}
-														</span>
-													)}
-												</span>
-											)}
-										</div>
-										<div className="task-actions">
-											<button 
-												onClick={() => toggleTaskCompletion(originalIndex)}
-												title={taskItem.completed ? "Mark as pending" : "Mark as completed"}
-											>
-												{!taskItem.completed ? (
-													<FaCheck className="complete-icon" />
-												) : (
-													<FaUndo className="undo-icon" />
-												)}
-											</button>
-											<button 
-												onClick={() => deleteTask(originalIndex)}
-												title="Delete task"
-											>
-												<FaTrash className="delete-icon" />
-											</button>
-										</div>
-									</li>
-								);
-							})
-						)}
-					</ul>
-				</div>
-			</div>
-		</div>
-	);
+        {syncStatus && (
+          <div className="sync-status">
+            {syncStatus}
+          </div>
+        )}
+
+        <div className="view-toggle">
+          <button onClick={() => setView("all")} className={view === "all" ? "active" : ""}>All</button>
+          <button onClick={() => setView("completed")} className={view === "completed" ? "active" : ""}>Completed</button>
+          <button onClick={() => setView("pending")} className={view === "pending" ? "active" : ""}>Pending</button>
+        </div>
+
+        <ul className="task-list">
+          {filteredTasks.map((taskItem, index) => (
+            <li key={index} className={taskItem.completed ? "completed" : ""}>
+              <span>{taskItem.text}</span>
+              {taskItem.date && (
+                <span className="task-date">
+                  <FaCalendar /> {taskItem.date} {taskItem.time}
+                </span>
+              )}
+              <div className="task-actions">
+                <button onClick={() => toggleTaskCompletion(index)}>
+                  {taskItem.completed ? <FaUndo /> : <FaCheck />}
+                </button>
+                <button onClick={() => deleteTask(index)}>
+                  <FaTrash />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 };
 
 export default Todo;
