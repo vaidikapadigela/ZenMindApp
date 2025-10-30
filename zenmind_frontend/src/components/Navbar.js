@@ -19,61 +19,61 @@ const Navbar = () => {
     window.location.href = "/";
   };
 
-  // 🧠 Close dropdown automatically when route changes
+  // Close dropdown automatically when route changes
   useEffect(() => {
     setActiveDropdown(null);
   }, [location.pathname]);
 
   return (
-    <nav className="navbar">
+    <nav className="zen-navbar">
       {/* === LEFT: Brand === */}
-      <div className="navbar-brand">
-        <Link to="/" className="navbar-logo">
+      <div className="zen-navbar__brand">
+        <Link to="/" className="zen-navbar__logo">
           ZenMind
         </Link>
 
         <button
-          className="navbar-toggle"
+          className="zen-navbar__toggle"
           onClick={toggleMenu}
           aria-expanded={isMenuOpen}
         >
-          <span className="hamburger"></span>
+          <span className="zen-navbar__hamburger"></span>
         </button>
       </div>
 
       {/* === CENTER + RIGHT === */}
-      <div className={`navbar-menu ${isMenuOpen ? "active" : ""}`}>
+      <div className={`zen-navbar__menu ${isMenuOpen ? "zen-navbar__menu--active" : ""}`}>
         {/* === CENTER: Mindful / Productive / Games === */}
         {isLoggedIn && (
-          <div className="navbar-center">
+          <div className="zen-navbar__center">
             {/* Mindful Dropdown */}
-            <div className="navbar-dropdown">
+            <div className="zen-navbar__dropdown">
               <button
-                className="dropdown-toggle"
+                className="zen-navbar__dropdown-toggle"
                 onClick={() => toggleDropdown("mindful")}
               >
                 Mindful{" "}
                 <FaChevronDown
-                  className={`arrow ${
-                    activeDropdown === "mindful" ? "open" : ""
+                  className={`zen-navbar__arrow ${
+                    activeDropdown === "mindful" ? "zen-navbar__arrow--open" : ""
                   }`}
                 />
               </button>
               {activeDropdown === "mindful" && (
-                <div className="dropdown-menu">
-                  <Link to="/WorryRelease" className="dropdown-item">
+                <div className="zen-navbar__dropdown-menu">
+                  <Link to="/WorryRelease" className="zen-navbar__dropdown-item">
                     Worry Release
                   </Link>
-                  <Link to="/GratitudeLog" className="dropdown-item">
+                  <Link to="/GratitudeLog" className="zen-navbar__dropdown-item">
                     Gratitude Log
                   </Link>
-                  <Link to="/Journaling" className="dropdown-item">
+                  <Link to="/Journaling" className="zen-navbar__dropdown-item">
                     Journal
                   </Link>
-                  <Link to="/Soundscape" className="dropdown-item">
+                  <Link to="/Soundscape" className="zen-navbar__dropdown-item">
                     Soundscape
                   </Link>
-                  <Link to="/Meditation-timer" className="dropdown-item">
+                  <Link to="/Meditation-timer" className="zen-navbar__dropdown-item">
                     Meditation Timer
                   </Link>
                 </div>
@@ -81,24 +81,24 @@ const Navbar = () => {
             </div>
 
             {/* Productive Dropdown */}
-            <div className="navbar-dropdown">
+            <div className="zen-navbar__dropdown">
               <button
-                className="dropdown-toggle"
+                className="zen-navbar__dropdown-toggle"
                 onClick={() => toggleDropdown("productive")}
               >
                 Productive{" "}
                 <FaChevronDown
-                  className={`arrow ${
-                    activeDropdown === "productive" ? "open" : ""
+                  className={`zen-navbar__arrow ${
+                    activeDropdown === "productive" ? "zen-navbar__arrow--open" : ""
                   }`}
                 />
               </button>
               {activeDropdown === "productive" && (
-                <div className="dropdown-menu">
-                  <Link to="/Todo" className="dropdown-item">
+                <div className="zen-navbar__dropdown-menu">
+                  <Link to="/Todo" className="zen-navbar__dropdown-item">
                     To-Do
                   </Link>
-                  <Link to="/PomodoroTimer" className="dropdown-item">
+                  <Link to="/PomodoroTimer" className="zen-navbar__dropdown-item">
                     Pomodoro Timer
                   </Link>
                   
@@ -107,42 +107,42 @@ const Navbar = () => {
             </div>
 
             {/* Games Dropdown */}
-            <div className="navbar-dropdown">
+            <div className="zen-navbar__dropdown">
               <button
-                className="dropdown-toggle"
+                className="zen-navbar__dropdown-toggle"
                 onClick={() => toggleDropdown("games")}
               >
                 Games{" "}
                 <FaChevronDown
-                  className={`arrow ${
-                    activeDropdown === "games" ? "open" : ""
+                  className={`zen-navbar__arrow ${
+                    activeDropdown === "games" ? "zen-navbar__arrow--open" : ""
                   }`}
                 />
               </button>
               {activeDropdown === "games" && (
-                <div className="dropdown-menu">
-                  <Link to="/ZenMemoryGame" className="dropdown-item">
+                <div className="zen-navbar__dropdown-menu">
+                  <Link to="/ZenMemoryGame" className="zen-navbar__dropdown-item">
                     Zen Memory
                   </Link>
-                  <Link to="/Sudoku" className="dropdown-item">
+                  <Link to="/Sudoku" className="zen-navbar__dropdown-item">
                     Sudoku
                   </Link>
-                  <Link to="/TicTacToe" className="dropdown-item">
+                  <Link to="/TicTacToe" className="zen-navbar__dropdown-item">
                     Tic Tac Toe
                   </Link>
-                  <Link to="/ColouringBook" className="dropdown-item">
+                  <Link to="/ColouringBook" className="zen-navbar__dropdown-item">
                     Scribble
                   </Link>
-                  <Link to="/BreakoutGame" className="dropdown-item">
+                  <Link to="/BreakoutGame" className="zen-navbar__dropdown-item">
                     Breakout Game
                   </Link>
-                  <Link to="/ClickerGame" className="dropdown-item">
+                  <Link to="/ClickerGame" className="zen-navbar__dropdown-item">
                     Clicker Game
                   </Link>
-                  <Link to="/Game2048" className="dropdown-item">
+                  <Link to="/Game2048" className="zen-navbar__dropdown-item">
                     2048
                   </Link>
-                  <Link to="/MazeGame" className="dropdown-item">
+                  <Link to="/MazeGame" className="zen-navbar__dropdown-item">
                     Maze Game
                   </Link>
                 </div>
@@ -151,23 +151,23 @@ const Navbar = () => {
           </div>
         )}
 
-      {/* === RIGHT: Profile + Logout === */}
-<div className="navbar-right">
-  {isLoggedIn ? (
-    <>
-      <Link to="/ProfilePage" className="profile-button">
-        Profile
-      </Link>
-      <button onClick={handleLogout} className="logout-button">
-        Logout
-      </button>
-    </>
-  ) : (
-    <Link to="/Login" className="logout-button">
-      Login
-    </Link>
-  )}
-</div>
+        {/* === RIGHT: Profile + Logout === */}
+        <div className="zen-navbar__right">
+          {isLoggedIn ? (
+            <>
+              <Link to="/ProfilePage">
+                <button className="zen-navbar__btn">Profile</button>
+              </Link>
+              <button onClick={handleLogout} className="zen-navbar__btn">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/Login">
+              <button className="zen-navbar__btn">Login</button>
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );

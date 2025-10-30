@@ -1,53 +1,67 @@
-.navbar {
+.zen-navbar {
   background-color: var(--card-background);
   padding: 1rem 2rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 2rem;
+  position: relative;
 }
 
 /* === Brand === */
-.navbar-brand {
+.zen-navbar__brand {
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
-.navbar-logo {
+.zen-navbar__logo {
   color: var(--header-color);
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
   text-decoration: none;
   transition: color 0.3s ease;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
-.navbar-logo:hover {
+.zen-navbar__logo:hover {
   color: var(--primary-button);
 }
 
 /* === Menu Layout === */
-.navbar-menu {
-  display: contents;
+.zen-navbar__menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 2rem;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
 /* === Center: Mindful / Productive / Games === */
-.navbar-center {
+.zen-navbar__center {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 2rem;
+  flex: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.navbar-dropdown {
+.zen-navbar__dropdown {
   position: relative;
 }
 
-.dropdown-toggle {
+.zen-navbar__dropdown-toggle {
   background: none;
   border: none;
   color: var(--text-color);
@@ -61,22 +75,22 @@
 }
 
 /* Remove hover color on center options */
-.dropdown-toggle:hover {
+.zen-navbar__dropdown-toggle:hover {
   color: var(--text-color);
 }
 
 /* Arrow rotation */
-.arrow {
+.zen-navbar__arrow {
   font-size: 0.8rem;
   transition: transform 0.2s ease;
 }
 
-.arrow.open {
+.zen-navbar__arrow--open {
   transform: rotate(180deg);
 }
 
 /* Dropdown Menu */
-.dropdown-menu {
+.zen-navbar__dropdown-menu {
   position: absolute;
   top: 2.5rem;
   left: 0;
@@ -88,10 +102,10 @@
   padding: 0.5rem 0;
   min-width: 160px;
   z-index: 1000;
-  animation: fadeIn 0.2s ease-in-out;
+  animation: zen-fadeIn 0.2s ease-in-out;
 }
 
-.dropdown-item {
+.zen-navbar__dropdown-item {
   text-decoration: none;
   color: var(--text-color);
   padding: 0.6rem 1rem;
@@ -99,28 +113,27 @@
 }
 
 /* Keep dropdown item hover subtle */
-.dropdown-item:hover {
+.zen-navbar__dropdown-item:hover {
   background-color: var(--background-color2);
   color: var(--text-color);
 }
 
 /* === Right: Profile + Logout Buttons === */
-.navbar-right {
+.zen-navbar__right {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.8rem; /* balanced spacing */
+  gap: 0.8rem;
   white-space: nowrap;
-  flex-direction: row;
+  margin-left: auto;
 }
 
-.navbar-right a {
+.zen-navbar__right a {
   text-decoration: none;
 }
 
-/* Profile + Logout Buttons */
-.profile-button,
-.logout-button {
+/* Unified Button Style */
+.zen-navbar__btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -135,17 +148,17 @@
   text-decoration: none;
   transition: background 0.3s ease, transform 0.2s ease;
   line-height: 1;
-  vertical-align: middle; /* ensures both align perfectly */
+  height: 40px;
+  box-sizing: border-box;
 }
 
-.profile-button:hover,
-.logout-button:hover {
+.zen-navbar__btn:hover {
   background-color: var(--header-color);
   transform: translateY(-1px);
 }
 
 /* === Mobile Menu Toggle === */
-.navbar-toggle {
+.zen-navbar__toggle {
   display: none;
   background: none;
   border: none;
@@ -153,7 +166,7 @@
   padding: 0.5rem;
 }
 
-.hamburger {
+.zen-navbar__hamburger {
   display: block;
   width: 24px;
   height: 2px;
@@ -162,8 +175,8 @@
   transition: all 0.3s ease;
 }
 
-.hamburger::before,
-.hamburger::after {
+.zen-navbar__hamburger::before,
+.zen-navbar__hamburger::after {
   content: '';
   position: absolute;
   width: 24px;
@@ -172,31 +185,32 @@
   transition: all 0.3s ease;
 }
 
-.hamburger::before {
+.zen-navbar__hamburger::before {
   top: -8px;
 }
 
-.hamburger::after {
+.zen-navbar__hamburger::after {
   bottom: -8px;
 }
 
 /* === Animations === */
-@keyframes fadeIn {
+@keyframes zen-fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* === Responsive === */
 @media (max-width: 768px) {
-  .navbar {
-    grid-template-columns: 1fr;
+  .zen-navbar {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .navbar-menu {
+  .zen-navbar__menu {
     display: none;
   }
 
-  .navbar-menu.active {
+  .zen-navbar__menu--active {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -205,15 +219,15 @@
     gap: 1rem;
   }
 
-  .navbar-right {
+  .zen-navbar__right {
     flex-direction: row;
-    justify-content: right;
+    justify-content: flex-end;
     width: 100%;
+    margin-left: 0;
   }
 
-  .profile-button,
-  .logout-button {
+  .zen-navbar__btn {
     width: auto;
-    text-align: right;
+    text-align: center;
   }
 }
