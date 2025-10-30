@@ -1,142 +1,86 @@
+:root {
+  --background-color: #fefae9;
+  --card-background: rgba(252, 234, 217, 0.95);
+  --primary-button: #f2827f;
+  --secondary-button-hover: #b3e0d6;
+  --text-color: #455b55;
+  --header-color: #f1c27d;
+}
+
+/* === GLOBAL === */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background-color: var(--background-color);
+}
+
+body {
+  padding-top: 80px; /* space for navbar */
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* === NAVBAR === */
 .zen-navbar {
-  background-color: var(--card-background);
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: var(--card-background);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
-  position: relative;
+  padding: 0 2rem;
+  z-index: 1000;
+  box-sizing: border-box;
 }
 
-/* === Brand === */
-.zen-navbar__brand {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
+/* === LOGO === */
 .zen-navbar__logo {
   color: var(--header-color);
   font-size: 1.5rem;
   font-weight: bold;
   text-decoration: none;
   transition: color 0.3s ease;
-  line-height: 1;
-  display: flex;
-  align-items: center;
 }
 
 .zen-navbar__logo:hover {
   color: var(--primary-button);
 }
 
-/* === Menu Layout === */
-.zen-navbar__menu {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
-  gap: 2rem;
-  margin: 0 auto;
-  max-width: 1200px;
-}
-
-/* === Center: Mindful / Productive / Games === */
+/* === CENTER MENU === */
 .zen-navbar__center {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 2rem;
-  flex: 1;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
-.zen-navbar__dropdown {
+.zen-navbar__item {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
   position: relative;
 }
 
-.zen-navbar__dropdown-toggle {
-  background: none;
-  border: none;
-  color: var(--text-color);
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 500;
-  transition: color 0.2s ease;
+.zen-navbar__item:hover {
+  color: var(--primary-button);
 }
 
-/* Remove hover color on center options */
-.zen-navbar__dropdown-toggle:hover {
-  color: var(--text-color);
-}
-
-/* Arrow rotation */
-.zen-navbar__arrow {
-  font-size: 0.8rem;
-  transition: transform 0.2s ease;
-}
-
-.zen-navbar__arrow--open {
-  transform: rotate(180deg);
-}
-
-/* Dropdown Menu */
-.zen-navbar__dropdown-menu {
-  position: absolute;
-  top: 2.5rem;
-  left: 0;
-  background-color: var(--card-background);
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem 0;
-  min-width: 160px;
-  z-index: 1000;
-  animation: zen-fadeIn 0.2s ease-in-out;
-}
-
-.zen-navbar__dropdown-item {
-  text-decoration: none;
-  color: var(--text-color);
-  padding: 0.6rem 1rem;
-  transition: background 0.2s ease;
-}
-
-/* Keep dropdown item hover subtle */
-.zen-navbar__dropdown-item:hover {
-  background-color: var(--background-color2);
-  color: var(--text-color);
-}
-
-/* === Right: Profile + Logout Buttons === */
+/* === RIGHT BUTTONS === */
 .zen-navbar__right {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 0.8rem;
-  white-space: nowrap;
-  margin-left: auto;
 }
 
-.zen-navbar__right a {
-  text-decoration: none;
-}
-
-/* Unified Button Style */
 .zen-navbar__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   padding: 0.5rem 1.2rem;
   font-size: 1rem;
   font-weight: 500;
@@ -145,11 +89,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  text-decoration: none;
   transition: background 0.3s ease, transform 0.2s ease;
-  line-height: 1;
-  height: 40px;
-  box-sizing: border-box;
 }
 
 .zen-navbar__btn:hover {
@@ -157,77 +97,72 @@
   transform: translateY(-1px);
 }
 
-/* === Mobile Menu Toggle === */
-.zen-navbar__toggle {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-}
-
-.zen-navbar__hamburger {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background-color: var(--text-color);
+/* === Hover Box (Stable Version) === */
+.zen-navbar__group {
   position: relative;
-  transition: all 0.3s ease;
 }
 
-.zen-navbar__hamburger::before,
-.zen-navbar__hamburger::after {
-  content: '';
+.zen-hoverbox {
   position: absolute;
-  width: 24px;
-  height: 2px;
-  background-color: var(--text-color);
-  transition: all 0.3s ease;
+  top: 100%; /* directly below parent item */
+  left: 0;
+  width: max-content;
+  min-width: 220px;
+  background: var(--card-background);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  padding: 1rem 1.5rem;
+  border-radius: 0 0 12px 12px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  z-index: 999;
+  animation: zen-fadeIn 0.2s ease-in-out;
 }
 
-.zen-navbar__hamburger::before {
-  top: -8px;
+.grid-large {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  width: 600px;
 }
 
-.zen-navbar__hamburger::after {
-  bottom: -8px;
+.zen-hoverbox a {
+  text-decoration: none;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
+  backdrop-filter: blur(6px);
 }
 
-/* === Animations === */
-@keyframes zen-fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+.zen-hoverbox a:hover {
+  background: var(--secondary-button-hover);
+  transform: translateY(-2px);
 }
 
-/* === Responsive === */
+
+/* === LARGER GRID FOR GAMES === */
+.grid-large {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
   .zen-navbar {
     flex-direction: column;
-    align-items: stretch;
-  }
-
-  .zen-navbar__menu {
-    display: none;
-  }
-
-  .zen-navbar__menu--active {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--card-background);
+    height: auto;
     padding: 1rem;
+  }
+
+  .zen-navbar__center {
+    flex-direction: column;
     gap: 1rem;
   }
 
-  .zen-navbar__right {
-    flex-direction: row;
-    justify-content: flex-end;
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .zen-navbar__btn {
-    width: auto;
-    text-align: center;
+  .zen-hoverbox {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    padding: 1rem;
   }
 }

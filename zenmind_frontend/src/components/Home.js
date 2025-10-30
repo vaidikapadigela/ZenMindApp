@@ -26,6 +26,9 @@ const Home = () => {
     { title: "Clicker", description: "Tap away and relieve stress with a simple clicker game.", icon: "🖱️", path: "/ClickerGame" },
     { title: "2048", description: "Relax while merging numbers to reach 2048!", icon: "🔢", path: "/Game2048" },
     { title: "Maze", description: "Find your way out and enjoy a mindful challenge.", icon: "🌀", path: "/MazeGame" },
+    { title: "Flappy Bird", description: "Simple reflex-based fun — hit space to fly!", icon: "🐤", path: "/FlappyBirdGame" },
+    { title: "Snake", description: "Classic arcade fun — grow longer, stay alive!", icon: "🐍", path: "/SnakeGame" },
+    { title: "Sliding Puzzle", description: "Slow-paced, focus-boosting puzzle challenge.", icon: "🧩", path: "/SlidingPuzzleGame" },
   ];
 
   return (
@@ -78,7 +81,7 @@ const Home = () => {
       </section>
 
       {/* Mindfulness Tools */}
-      <section className="features-section">
+      <section id="mindful" className="features-section">
         <h2>Mindfulness Tools</h2>
         <p className="section-subtitle">Explore tools that help you calm your mind and nurture inner peace</p>
         <div className="features-grid">
@@ -93,7 +96,7 @@ const Home = () => {
       </section>
 
       {/* Productivity Tools */}
-      <section className="features-section">
+      <section id="productive"className="features-section">
         <h2>Productivity Tools</h2>
         <p className="section-subtitle">Stay focused, organized, and in control of your tasks</p>
         <div className="features-grid">
@@ -108,7 +111,7 @@ const Home = () => {
       </section>
 
       {/* Games for Relaxation */}
-      <section className="features-section">
+      <section id="games" className="features-section">
         <h2>Games for Relaxation</h2>
         <p className="section-subtitle">Take a mindful break with our collection of relaxing games</p>
         <div className="features-grid">

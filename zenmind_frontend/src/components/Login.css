@@ -16,8 +16,9 @@
   }
   
   .login-wrapper {
-    min-height: 100vh;
+    /* min-height: 100vh; */
     width: 100%;
+    height: 100%;
     display: flex;
     padding: 0;
     box-sizing: border-box;
@@ -52,6 +53,7 @@
     margin: 30px 10px 40px 30px;
     max-width: 450px;
     width: 100%;
+    height: 100%;
     position: relative;
     z-index: 1;
     opacity: 0;
@@ -593,7 +595,7 @@
 
   .password-toggle svg {
     display: block;
-    margin-bottom: 30px; /* avoid inline svg baseline shifts */
+
   }
 
   /* Add this to your existing Login.css */
