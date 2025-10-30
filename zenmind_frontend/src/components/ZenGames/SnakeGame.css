@@ -1,0 +1,118 @@
+.snake-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: url("/public/bg.jpg") no-repeat center center/cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0.5rem; /* ↓ reduced from 6rem to 3.5rem */
+  overflow-x: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+
+.snake-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: green;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.snake-box {
+  background: var(--card-background);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.snake-box:hover {
+  transform: scale(1.02);
+}
+
+.snake-desc {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-bottom: 0.8rem;
+}
+
+.snake-score {
+  font-weight: 600;
+  color: var(--gold-color);
+  margin-bottom: 1rem;
+}
+
+.snake-grid {
+  display: grid;
+  width: 380px;
+  height: 380px;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 2px solid rgba(120, 100, 80, 0.3);
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.snake-cell {
+  width: 100%;
+  height: 100%;
+}
+
+.snake-empty {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.snake-body {
+  background-color: #8fd19e;
+  border-radius: 4px;
+}
+
+.snake-food {
+  background-color: #f2827f;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #f2827f;
+}
+
+.snake-over {
+  margin-top: 1rem;
+  color: #b94a48;
+  font-weight: 600;
+}
+
+.snake-btn {
+  background-color: var(--primary-button);
+  border: none;
+  color: white;
+  padding: 0.8rem 1.6rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.snake-btn:hover {
+  background-color: var(--secondary-button-hover);
+  color: var(--text-color);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .snake-grid {
+    width: 300px;
+    height: 300px;
+  }
+
+  .snake-heading {
+    font-size: 1.8rem;
+  }
+}

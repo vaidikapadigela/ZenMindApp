@@ -4,11 +4,11 @@ import "./MazeGame.css";
 const size = 10;
 const exit = [9, 9];
 
-// Generate a solvable maze using recursive backtracking
+// ✅ Always generates a playable maze with an open path at least near start & exit
 const generateMaze = () => {
   const maze = Array(size)
     .fill()
-    .map(() => Array(size).fill(1)); // Start with all walls
+    .map(() => Array(size).fill(1));
 
   const directions = [
     [-1, 0],
@@ -42,50 +42,17 @@ const generateMaze = () => {
     }
   };
 
+  // carve from start
   carve(0, 0);
 
-  // Ensure exit is reachable
-  const visited = Array(size)
-    .fill()
-    .map(() => Array(size).fill(false));
-
-  const canReach = (x, y) => {
-    if (
-      x < 0 ||
-      x >= size ||
-      y < 0 ||
-      y >= size ||
-      visited[x][y] ||
-      maze[x][y] === 1
-    )
-      return false;
-    if (x === exit[0] && y === exit[1]) return true;
-    visited[x][y] = true;
-    return (
-      canReach(x + 1, y) ||
-      canReach(x - 1, y) ||
-      canReach(x, y + 1) ||
-      canReach(x, y - 1)
-    );
-  };
-
-  // Create guaranteed path if unreachable
-  if (!canReach(0, 0)) {
-    let x = 0,
-      y = 0;
-    while (x < exit[0] || y < exit[1]) {
-      maze[x][y] = 0;
-      if (x < exit[0] && (y === exit[1] || Math.random() < 0.5)) {
-        x++;
-      } else if (y < exit[1]) {
-        y++;
-      }
-      maze[x][y] = 0;
-    }
-  }
-
+  // ✅ Ensure openings around start and exit
   maze[0][0] = 0;
+  maze[0][1] = 0;
+  maze[1][0] = 0;
   maze[exit[0]][exit[1]] = 0;
+  maze[exit[0]][exit[1] - 1] = 0;
+  maze[exit[0] - 1][exit[1]] = 0;
+
   return maze;
 };
 
@@ -123,7 +90,6 @@ const MazeGame = () => {
         if (e.key === "ArrowRight") move(0, 1);
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [move]);
@@ -136,11 +102,12 @@ const MazeGame = () => {
   };
 
   return (
-    <div className="maze-container">
+    <div className="maze-wrapper">
+      <h2 className="maze-title">Maze Escape</h2>
+
       <div className="maze-card">
-        <h2>🌾 Maze Escape</h2>
-        <p className="desc">Use arrow keys to reach the exit!</p>
-        <p className="moves">Moves: {moves}</p>
+        <p className="maze-desc">Use arrow keys to reach the exit 🏁</p>
+        <p className="maze-moves">Moves: {moves}</p>
 
         <div className="maze-grid">
           {[...Array(size)].map((_, i) => (
@@ -154,10 +121,10 @@ const MazeGame = () => {
                 return (
                   <div
                     key={`${i}-${j}`}
-                    className={`maze-cell ${isPlayer ? "player" : ""} ${
-                      isExit ? "exit" : ""
-                    } ${isWall ? "wall" : ""} ${
-                      isStart && !isPlayer ? "start" : ""
+                    className={`maze-cell ${isPlayer ? "maze-player" : ""} ${
+                      isExit ? "maze-exit" : ""
+                    } ${isWall ? "maze-wall" : ""} ${
+                      isStart && !isPlayer ? "maze-start" : ""
                     }`}
                   >
                     {isPlayer && "🧑"}
@@ -170,13 +137,15 @@ const MazeGame = () => {
         </div>
 
         {won && (
-          <div className="win-section">
-            <p className="win-text">🎉 You Escaped the Maze!</p>
-            <p className="win-moves">Completed in {moves} moves</p>
+          <div className="maze-win">
+            <p className="maze-win-text">🎉 You Escaped the Maze!</p>
+            <p className="maze-win-moves">Completed in {moves} moves</p>
           </div>
         )}
 
-        <button onClick={reset}>New Maze</button>
+        <button className="maze-reset" onClick={reset}>
+          New Maze
+        </button>
       </div>
     </div>
   );

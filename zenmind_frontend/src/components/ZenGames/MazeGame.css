@@ -1,48 +1,102 @@
-.maze-container {
+.maze-wrapper {
   min-height: 100vh;
-  background: url("/public/bg.jpg") center/cover no-repeat fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.maze-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
-  padding: 2rem 2.5rem;
-  text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
-
-.maze-card h2 {
-  color: #4c956c;
-  margin: 0 0 0.5rem 0;
-}
-
-.desc {
-  color: #777;
-  font-size: 0.9rem;
-  margin: 0 0 0.3rem 0;
-}
-
-.moves {
-  color: #5c755e;
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin: 0 0 1rem 0;
-}
-
-.maze-grid {
-  outline: none;
+  width: 100%;
+  background: url("/public/bg.jpg") no-repeat center center/cover;
   display: flex;
   flex-direction: column;
-  margin: 1rem auto;
-  border: 2px solid rgba(92, 117, 94, 0.3);
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  font-family: "Poppins", sans-serif;
+}
+
+/* 🌾 Title outside box */
+.maze-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: green;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.6px;
+}
+
+/* 🟡 Glass effect card */
+/* Center everything inside the card */
+.maze-card {
+  background: var(--card-background);
+  backdrop-filter: blur(8px);
+  border-radius: 25px;
+  padding: 2.5rem 4rem;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ keeps button and grid centered */
+}
+
+.maze-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Maze grid */
+.maze-grid {
+  display: grid; /* ✅ changed from inline-block to grid for cleaner centering */
+  grid-template-rows: repeat(10, auto);
+  justify-content: center; /* ✅ ensures maze stays centered */
+  margin-bottom: 1.5rem;
+}
+
+/* Fix rows to align horizontally */
+.maze-row {
+  display: flex;
+  justify-content: center; /* ✅ ensures all rows align */
+}
+
+/* Button fix */
+.maze-reset {
+  background-color: #fce8b2;
+  border: none;
+  padding: 0.8em 1.6em;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1.5em;
+  color: #4a4a4a;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+  align-self: center; /* ✅ ensures the button centers properly */
+}
+
+.maze-reset:hover {
+  background-color: #ffe194;
+  transform: translateY(-2px);
+}
+
+
+/* 📜 Text styles */
+.maze-desc {
+  font-size: 1rem;
+  color: var(--text-color);
+  opacity: 0.85;
+  margin-bottom: 1em;
+}
+
+.maze-moves {
+  font-size: 1.1rem;
+  color: var(--gold-color);
+  font-weight: 600;
+  margin-bottom: 1.5em;
+}
+
+/* 🧱 Maze grid */
+.maze-grid {
+  display: inline-block;
+  border: 3px solid rgba(245, 230, 180, 0.6);
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
 }
 
 .maze-row {
@@ -50,64 +104,71 @@
 }
 
 .maze-cell {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  background: #faf9f6;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  transition: background 0.2s;
+  font-size: 18px;
 }
 
-.player {
-  background: #77bfa3;
+.maze-wall {
+  background-color: rgba(120, 150, 120, 0.7);
+  border-radius: 2px;
 }
 
-.exit {
-  background: #f4c95d;
+.maze-player {
+  background-color: #ffe194;
+  border-radius: 4px;
 }
 
-.wall {
-  background: #3a3a3a;
+.maze-exit {
+  background-color: #b7e4c7;
+  border-radius: 4px;
 }
 
-.start {
-  background: #d4f1f4;
+.maze-start {
+  background-color: #fce8b2;
+  border-radius: 4px;
 }
 
-.win-section {
-  margin-top: 1rem;
+/* 🎉 Win section */
+.maze-win {
+  margin-top: 1em;
 }
 
-.win-text {
-  font-weight: bold;
-  color: #4c956c;
+.maze-win-text {
   font-size: 1.2rem;
-  margin: 0.5rem 0 0.3rem 0;
+  color: #4a4a4a;
+  font-weight: 600;
 }
 
-.win-moves {
-  color: #5c755e;
-  font-size: 0.9rem;
-  margin: 0 0 0.5rem 0;
+.maze-win-moves {
+  font-size: 1rem;
+  color: var(--gold-color);
 }
 
-button {
-  margin-top: 1rem;
+/* 🔁 Button */
+.maze-reset {
+  background-color: #fce8b2;
   border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 10px;
-  background: #77bfa3;
-  color: white;
+  padding: 0.8em 1.6em;
+  border-radius: 12px;
   cursor: pointer;
-  transition: 0.2s;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 1rem;
+  margin-top: 1.2em;
+  color: #4a4a4a;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
 }
 
-button:hover {
-  background: #5ea98b;
-  transform: translateY(-1px);
+.maze-reset:hover {
+  background-color: #ffe194;
+  transform: translateY(-2px);
+}
+
+body, html {
+  overflow-x: hidden;
 }

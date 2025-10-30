@@ -9,7 +9,6 @@ const ZenMemoryGame = () => {
   const [matched, setMatched] = useState([]);
   const [gameOver, setGameOver] = useState(false);
 
-  // shuffle cards
   const shuffleCards = () => {
     const shuffled = [...icons, ...icons]
       .sort(() => Math.random() - 0.5)
@@ -20,7 +19,6 @@ const ZenMemoryGame = () => {
     setGameOver(false);
   };
 
-  // initial shuffle
   useEffect(() => {
     shuffleCards();
   }, []);
@@ -44,43 +42,45 @@ const ZenMemoryGame = () => {
       setGameOver(true);
       setTimeout(() => {
         alert("✨ Well done! Your mind is calm and focused. 🪷");
-        shuffleCards(); // reshuffle positions after game ends
+        shuffleCards();
       }, 600);
     }
   }, [matched, cards]);
 
   return (
-    <div className="zenmind-container">
-      <div className="zenmind-card">
-        <h1 className="zenmind-title">🧩 Mindful Memory Game</h1>
-        <p className="zenmind-subtitle">
+    <div className="zen-memory-container">
+      <div className="zen-memory-header">
+        <h1 className="zen-memory-title">Mindful Memory Game</h1>
+        <p className="zen-memory-subtitle">
           Sharpen your focus and stay present — match the cards mindfully 🌿
         </p>
+      </div>
 
-        <div className="memory-grid">
+      <div className="zen-memory-card">
+        <div className="zen-memory-grid">
           {cards.map((card, index) => {
             const isFlipped = flipped.includes(index) || matched.includes(index);
             return (
               <div
                 key={index}
-                className={`memory-card ${isFlipped ? "flipped" : ""}`}
+                className={`zen-memory-tile ${isFlipped ? "flipped" : ""}`}
                 onClick={() => handleFlip(index)}
               >
-                <div className="card-inner">
-                  <div className="card-front">❓</div>
-                  <div className="card-back">{card.symbol}</div>
+                <div className="zen-tile-inner">
+                  <div className="zen-tile-front">❓</div>
+                  <div className="zen-tile-back">{card.symbol}</div>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <button className="restart-btn" onClick={shuffleCards}>
+        <button className="zen-memory-restart" onClick={shuffleCards}>
           Restart Game
         </button>
 
-        <p className="zenmind-tip">
-          Tip: Focus on your breathing while flipping cards — it helps improve calm concentration 💫
+        <p className="zen-memory-tip">
+          🌸 Focus on your breathing while flipping cards — it helps calm your mind 💫
         </p>
       </div>
     </div>

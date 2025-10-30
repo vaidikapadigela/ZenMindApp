@@ -17,8 +17,9 @@ const ClickerGame = () => {
 
   return (
     <div className="clicker-container">
+      <h1 className="clicker-title">Calm Clicker</h1>
       <div className="clicker-content">
-        <h1 className="clicker-title">🖐️ Calm Clicker</h1>
+        
         <p className="clicker-desc">Tap to relax and release tension</p>
 
         <div

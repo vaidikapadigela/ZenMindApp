@@ -1,79 +1,111 @@
 .breakout-bg {
   min-height: 100vh;
-  background: url("/public/bg.jpg") center/cover no-repeat fixed;
+  background: var(--background-color2);
+  background-image: url("/public/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
+  flex-direction: column; /* 👈 allow stacking title + box */
   align-items: center;
   justify-content: center;
   padding: 1rem;
 }
 
+/* 🔹 Title outside the box */
+.breakout-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: green;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* 🔹 Game box */
 .breakout-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: var(--card-background);
+  border-radius: 20px;
+  padding: 1.8rem 2rem;
   backdrop-filter: blur(6px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   width: fit-content;
-  margin: 2rem auto;
+  margin: 0 auto 2rem auto;
   position: relative;
 }
 
-.breakout-container h2 {
-  color: #5c755e;
-  margin-bottom: 0.3rem;
-}
-
+/* Instructions */
 .instructions {
-  font-size: 0.9rem;
-  color: #777;
-  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
+/* Canvas */
 canvas {
   background: #fefcf3;
-  border-radius: 10px;
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(242, 130, 127, 0.2);
 }
 
+/* Overlay */
 .overlay {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.95);
   padding: 1rem 1.5rem;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
-  color: #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: var(--text-color);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .overlay button {
-  margin-top: 0.4rem;
-  padding: 0.35rem 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 8px;
-  background: #77bfa3;
+  border-radius: 12px;
+  background: var(--primary-button);
   color: white;
   cursor: pointer;
-  transition: 0.2s;
-  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(242, 130, 127, 0.2);
 }
 
 .overlay button:hover {
-  background: #5ea98b;
+  background: #e06a6a;
+  transform: translateY(-2px);
 }
 
 .gameover-title {
   font-size: 1.2rem;
-  margin: 0.3rem 0;
+  margin: 0.4rem 0;
   font-weight: 600;
+  color: var(--gold-color);
 }
 
 .score-text {
   margin: 0.3rem 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .breakout-container {
+    padding: 1.2rem;
+  }
+
+  canvas {
+    width: 90%;
+  }
 }

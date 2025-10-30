@@ -142,22 +142,24 @@ const Game2048 = () => {
   };
 
   return (
-    <div className="game2048-container">
-      <div className="game2048-card">
-        <h2>🧩 2048</h2>
-        <p className="desc">Use arrow keys to merge tiles</p>
-        <div className="grid">
+    <div className="game2048-bg">
+      <h2 className="game2048-title">2048</h2>
+      <div className="game2048-container">
+        <p className="game2048-desc">Use arrow keys to merge tiles</p>
+        <div className="game2048-grid">
           {grid.map((row, i) =>
             row.map((num, j) => (
-              <div key={`${i}-${j}`} className={`tile tile-${num}`}>
+              <div key={`${i}-${j}`} className={`game2048-tile tile-${num}`}>
                 {num !== 0 ? num : ""}
               </div>
             ))
           )}
         </div>
-        <p className="score">Score: {score}</p>
-        {gameOver && <p className="game-over-text">🎮 Game Over!</p>}
-        <button onClick={reset}>Restart</button>
+        <p className="game2048-score">Score: {score}</p>
+        {gameOver && <p className="game2048-over">🎮 Game Over!</p>}
+        <button className="game2048-btn" onClick={reset}>
+          Restart
+        </button>
       </div>
     </div>
   );

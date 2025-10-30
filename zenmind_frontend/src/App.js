@@ -25,6 +25,9 @@ import BreakoutGame from './components/ZenGames/BreakoutGame';
 import ClickerGame from './components/ZenGames/ClickerGame';
 import Game2048 from './components/ZenGames/Game2048';
 import MazeGame from './components/ZenGames/MazeGame';
+import SnakeGame from './components/ZenGames/SnakeGame';
+import FlappyBird from './components/ZenGames/FlappyBird';
+import SlidingPuzzleGame from './components/ZenGames/SlidingPuzzleGame';
 import { useContext } from 'react';
 
 // Protected Route component
@@ -90,6 +93,21 @@ function AppRoutes() {
          <Route path="/MazeGame" element={
           <ProtectedRoute>
             <MazeGame />
+          </ProtectedRoute>
+        } />
+        <Route path="/SnakeGame" element={
+          <ProtectedRoute>
+            <SnakeGame />
+          </ProtectedRoute>
+        } />
+        <Route path="/FlappyBird" element={
+          <ProtectedRoute>
+            <FlappyBird />
+          </ProtectedRoute>
+        } />
+        <Route path="/SlidingPuzzleGame" element={
+          <ProtectedRoute>
+            <SlidingPuzzleGame />
           </ProtectedRoute>
         } />
         <Route path="/ZenMemoryGame" element={

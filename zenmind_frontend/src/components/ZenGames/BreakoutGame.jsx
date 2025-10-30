@@ -214,8 +214,9 @@ const BreakoutGame = () => {
 
   return (
     <div className="breakout-bg">
+       <h2 className="breakout-title">Breakout Game</h2>
       <div className="breakout-container">
-        <h2>🧱 Breakout Game</h2>
+        
         <p className="instructions">Use ⬅️ ➡️ to move. Press Space to start.</p>
         <canvas ref={canvasRef} width={420} height={320}></canvas>
 

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./ColouringBook.css";
+import { MdCleaningServices } from "react-icons/md"; // 🧼 eraser icon
 
 const colors = [
   "#F2827F", // coral pink
@@ -17,12 +18,12 @@ export default function CanvasColoringBook() {
   const [drawing, setDrawing] = useState(false);
   const [color, setColor] = useState(colors[0]);
   const [ctx, setCtx] = useState(null);
+  const [isEraser, setIsEraser] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    // Setup drawing context
     context.lineCap = "round";
     context.lineJoin = "round";
     context.lineWidth = 5;
@@ -55,7 +56,8 @@ export default function CanvasColoringBook() {
   const draw = (e) => {
     if (!drawing || !ctx) return;
     const { x, y } = getCoordinates(e);
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = isEraser ? "white" : color;
+    ctx.lineWidth = isEraser ? 25 : 5; // ✅ larger eraser stroke
     ctx.lineTo(x, y);
     ctx.stroke();
   };
@@ -72,19 +74,37 @@ export default function CanvasColoringBook() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  const toggleEraser = () => {
+    setIsEraser((prev) => !prev);
+  };
+
   return (
     <div className="canvas-wrapper">
-      <h1>🎨 Color It!</h1>
+      <h1>Color It!</h1>
 
-      <div className="color-palette">
-        {colors.map((c) => (
-          <button
-            key={c}
-            className={`color-btn ${c === color ? "selected" : ""}`}
-            style={{ backgroundColor: c }}
-            onClick={() => setColor(c)}
-          />
-        ))}
+      <div className="tool-bar">
+        <div className="color-palette">
+          {colors.map((c) => (
+            <button
+              key={c}
+              className={`color-btn ${c === color && !isEraser ? "selected" : ""}`}
+              style={{ backgroundColor: c }}
+              onClick={() => {
+                setColor(c);
+                setIsEraser(false);
+              }}
+            />
+          ))}
+        </div>
+
+        <button
+          className={`eraser-btn ${isEraser ? "active" : ""}`}
+          onClick={toggleEraser}
+          title="Eraser"
+        >
+          <MdCleaningServices size={22} />
+          <span className="eraser-text">Eraser</span>
+        </button>
       </div>
 
       <canvas

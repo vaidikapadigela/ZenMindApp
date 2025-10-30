@@ -1,33 +1,54 @@
-.game2048-container {
+.game2048-bg {
   min-height: 100vh;
+  background: var(--background-color2);
+  background-image: url("/public/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* title + box */
   align-items: center;
-  background: url("/public/bg.jpg") center/cover no-repeat fixed;
+  justify-content: center;
   padding: 1rem;
 }
 
-.game2048-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(8px);
-  padding: 2rem 3rem;
-  border-radius: 20px;
+/* 🔹 Title outside the box */
+.game2048-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: green;
+  margin-bottom: 1.2rem;
   text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-.game2048-card h2 {
-  color: #4c956c;
-  margin-bottom: 0.5rem;
+/* 🔹 Game box */
+.game2048-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-background);
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  margin: 0 auto 2rem auto;
+  position: relative;
+  text-align: center;
 }
 
-.desc {
-  color: #777;
-  font-size: 0.9rem;
+/* 🔹 Subtitle */
+.game2048-desc {
+  color: var(--text-color);
+  font-size: 0.95rem;
   margin-bottom: 1rem;
+  opacity: 0.85;
 }
 
-.grid {
+/* 🔹 Grid styling */
+.game2048-grid {
   display: grid;
   grid-template-columns: repeat(4, 70px);
   grid-gap: 8px;
@@ -35,7 +56,7 @@
   width: fit-content;
 }
 
-.tile {
+.game2048-tile {
   width: 70px;
   height: 70px;
   border-radius: 10px;
@@ -49,7 +70,7 @@
   transition: all 0.15s ease;
 }
 
-/* Tile Colors */
+/* 🔹 Tile Colors */
 .tile-2 { background: #dfe7fd; color: #776e65; }
 .tile-4 { background: #bde0fe; color: #776e65; }
 .tile-8 { background: #a8dadc; color: #f9f6f2; }
@@ -62,33 +83,58 @@
 .tile-1024 { background: #ffd6a5; color: #f9f6f2; font-size: 1rem; }
 .tile-2048 { background: #caffbf; color: #f9f6f2; font-size: 1rem; }
 
-.score {
+/* 🔹 Score + Game Over text */
+.game2048-score {
   color: #5c755e;
   margin: 1rem 0 0.5rem 0;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
-.game-over-text {
+.game2048-over {
   color: #d9534f;
   font-weight: 600;
   font-size: 1.1rem;
   margin: 0.5rem 0;
 }
 
-button {
+/* 🔹 Restart Button */
+.game2048-btn {
   border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 10px;
-  background: #77bfa3;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  background: var(--primary-button);
   color: white;
   cursor: pointer;
-  transition: 0.2s;
-  font-size: 0.95rem;
-  font-weight: 500;
+  transition: 0.3s ease;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(242, 130, 127, 0.2);
 }
 
-button:hover {
-  background: #5ea98b;
-  transform: translateY(-1px);
+.game2048-btn:hover {
+  background: #e06a6a;
+  transform: translateY(-2px);
+}
+
+/* 🔹 Responsive */
+@media (max-width: 600px) {
+  .game2048-container {
+    padding: 1.5rem;
+  }
+
+  .game2048-grid {
+    grid-template-columns: repeat(4, 60px);
+    grid-gap: 6px;
+  }
+
+  .game2048-tile {
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+  }
+
+  .game2048-title {
+    font-size: 1.8rem;
+  }
 }

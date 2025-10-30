@@ -122,7 +122,7 @@ const Navbar = () => {
               {activeDropdown === "games" && (
                 <div className="zen-navbar__dropdown-menu">
                   <Link to="/ZenMemoryGame" className="zen-navbar__dropdown-item">
-                    Zen Memory
+                    Memory
                   </Link>
                   <Link to="/Sudoku" className="zen-navbar__dropdown-item">
                     Sudoku
@@ -134,16 +134,25 @@ const Navbar = () => {
                     Scribble
                   </Link>
                   <Link to="/BreakoutGame" className="zen-navbar__dropdown-item">
-                    Breakout Game
+                    Breakout
                   </Link>
                   <Link to="/ClickerGame" className="zen-navbar__dropdown-item">
-                    Clicker Game
+                    Clicker
                   </Link>
                   <Link to="/Game2048" className="zen-navbar__dropdown-item">
                     2048
                   </Link>
                   <Link to="/MazeGame" className="zen-navbar__dropdown-item">
-                    Maze Game
+                    Maze
+                  </Link>
+                  <Link to="/SnakeGame" className="zen-navbar__dropdown-item">
+                    Snake
+                  </Link>
+                  <Link to="/FlappyBird" className="zen-navbar__dropdown-item">
+                    Flappy Bird
+                  </Link>
+                  <Link to="/SlidingPuzzleGame" className="zen-navbar__dropdown-item">
+                    Sliding Puzzle
                   </Link>
                 </div>
               )}
