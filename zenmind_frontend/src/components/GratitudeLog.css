@@ -1,57 +1,77 @@
 :root {
   --background-color: #fefae9;
+  --background-color2: #f2e6c7;
   --card-background: rgba(252, 234, 217, 0.95);
   --primary-button: #f2827f;
   --secondary-button-hover: #b3e0d6;
   --text-color: #455b22;
   --gold-color: #e5b73b;
-  --background-image: url('/public/bg.jpg'); /* 🔹 change path as needed */
 }
 
-/* =========================== */
-/* Gratitude Page Styling */
-/* =========================== */
+/* 🔹 Page background */
 .gratitude-container {
-  background: var(--background-color)
-    url('/public/bg.jpg') no-repeat center center fixed;
-  background-size: cover;
   min-height: 100vh;
-  padding: 2rem;
+  background: url('/public/bg.jpg');
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  backdrop-filter: blur(4px);
+  justify-content: center;
+  padding: 1.5rem;
 }
 
-/* Title & Text */
+/* 🔹 Centered pastel box (covers title, subtitle, inputs, button) */
+.gratitude-box {
+  background: var(--card-background);
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  text-align: center;
+  width: 90%;
+  max-width: 480px;
+  margin: 0 auto;
+  animation: fadeSlideIn 0.6s ease;
+}
+
+/* 🔹 Title animation */
+@keyframes slideInTitle {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .gratitude-title {
-  color: var(--text-color);
   font-size: 2rem;
-  margin-bottom: 0.5rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  color: var(--gold-color);
+  margin-bottom: 0.6rem;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  animation: slideInTitle 1s ease-out;
 }
 
+/* 🔹 Subtitle */
 .gratitude-subtitle {
   color: #6a7b45;
   margin-bottom: 1.5rem;
   font-style: italic;
+  opacity: 0.9;
+  text-align: center;
 }
 
-/* Input Section */
+/* 🔹 Inputs */
 .gratitude-inputs {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 100%;
-  max-width: 400px;
-  background: var(--card-background);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.2rem;
 }
 
-/* Input Fields */
 .gratitude-input {
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--gold-color);
@@ -68,7 +88,7 @@
   background-color: #fff;
 }
 
-/* Button */
+/* 🔹 Button */
 .gratitude-btn {
   background: var(--primary-button);
   color: white;
@@ -76,19 +96,17 @@
   border: none;
   border-radius: 20px;
   padding: 0.8rem 1.5rem;
-  margin-top: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .gratitude-btn:hover {
-  background: var(--secondary-button-hover);
-  color: var(--text-color);
+  background: #e06a6a;
   transform: translateY(-2px);
 }
 
-/* Gratitude History */
+/* 🔹 Saved logs */
 .gratitude-history {
   margin-top: 2rem;
   width: 100%;
@@ -112,4 +130,14 @@
   font-size: 0.9rem;
   color: #7a8a4d;
   margin-bottom: 0.5rem;
+}
+
+/* 🔹 Responsive */
+@media (max-width: 600px) {
+  .gratitude-box {
+    padding: 1.5rem;
+  }
+  .gratitude-title {
+    font-size: 1.8rem;
+  }
 }

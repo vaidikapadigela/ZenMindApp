@@ -101,7 +101,8 @@ const Journaling = () => {
         <Link to="/JournalEntries" className="primary-button">
           View Previous Entries
         </Link>
-
+        <br></br>
+        <br></br>
         {/* --- Form Section --- */}
         <div className="journal-form">
           <div className="form-group">

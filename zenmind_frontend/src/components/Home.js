@@ -52,7 +52,7 @@ const Home = () => {
     { title: "Clicker", description: "Tap away and relieve stress with a simple clicker game.", icon: "🖱️", path: "/ClickerGame" },
     { title: "2048", description: "Relax while merging numbers to reach 2048!", icon: "🔢", path: "/Game2048" },
     { title: "Maze", description: "Find your way out and enjoy a mindful challenge.", icon: "🌀", path: "/MazeGame" },
-    { title: "Flappy Bird", description: "Simple reflex-based fun — hit space to fly!", icon: "🐤", path: "/FlappyBirdGame" },
+    { title: "Flappy Bird", description: "Simple reflex-based fun — hit space to fly!", icon: "🐤", path: "/FlappyBird" },
     { title: "Snake", description: "Classic arcade fun — grow longer, stay alive!", icon: "🐍", path: "/SnakeGame" },
     { title: "Sliding Puzzle", description: "Slow-paced, focus-boosting puzzle challenge.", icon: "🧩", path: "/SlidingPuzzleGame" },
   ];

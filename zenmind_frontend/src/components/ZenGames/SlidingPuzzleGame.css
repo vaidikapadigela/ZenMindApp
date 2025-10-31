@@ -136,3 +136,25 @@ body, html {
     font-size: 1.8rem;
   }
 }
+
+@keyframes slideInTitle {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.puzzle-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--gold-color);
+  margin-bottom: 1.2rem;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  animation: slideInTitle 1s ease-out;
+}
+

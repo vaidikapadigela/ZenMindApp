@@ -29,7 +29,11 @@
   font-weight: 700;
   margin-bottom: 1.5rem;
   text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.6px;
+  animation: slideInTitle 1s ease-out;
 }
+
 
 /* Wrapper for board + controls */
 .sudoku-wrapper {
@@ -205,3 +209,18 @@
   padding: 0;
 }
 
+/* ✨ Slide-in title animation (same as Flappy Bird) */
+@keyframes slideInTitle {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.sudoku-title {
+  animation: slideInTitle 1s ease-out;
+}

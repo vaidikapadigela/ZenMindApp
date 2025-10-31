@@ -23,6 +23,17 @@
 }
 
 /* 🔹 Game box */
+@keyframes fadeInContainer {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .breakout-container {
   display: flex;
   flex-direction: column;
@@ -36,7 +47,9 @@
   width: fit-content;
   margin: 0 auto 2rem auto;
   position: relative;
+  animation: fadeInContainer 0.8s ease-out;
 }
+
 
 /* Instructions */
 .instructions {
@@ -55,6 +68,17 @@ canvas {
 }
 
 /* Overlay */
+@keyframes popInOverlay {
+  0% {
+    transform: translateY(-50%) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
 .overlay {
   position: absolute;
   top: 50%;
@@ -65,7 +89,9 @@ canvas {
   text-align: center;
   color: var(--text-color);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  animation: popInOverlay 0.4s ease-out;
 }
+
 
 .overlay button {
   margin-top: 0.5rem;
@@ -81,10 +107,7 @@ canvas {
   box-shadow: 0 4px 10px rgba(242, 130, 127, 0.2);
 }
 
-.overlay button:hover {
-  background: #e06a6a;
-  transform: translateY(-2px);
-}
+
 
 .gameover-title {
   font-size: 1.2rem;
@@ -109,3 +132,39 @@ canvas {
     width: 90%;
   }
 }
+
+@keyframes slideInTitle {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.breakout-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--gold-color);
+  margin-bottom: 1.2rem;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  animation: slideInTitle 1s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.overlay button:hover {
+  background: #e06a6a;
+  animation: pulse 0.4s ease-in-out;
+}
+

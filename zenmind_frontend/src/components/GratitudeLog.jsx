@@ -22,27 +22,29 @@ const GratitudeLog = () => {
 
   return (
     <div className="gratitude-container">
-      <h2 className="gratitude-title">🌼 Gratitude Log</h2>
-      <p className="gratitude-subtitle">
-        Write three things you’re grateful for today.
-      </p>
+      <div className="gratitude-box">
+        <h2 className="gratitude-title">🌼 Gratitude Log</h2>
+        <p className="gratitude-subtitle">
+          Write three things you’re grateful for today.
+        </p>
 
-      <div className="gratitude-inputs">
-        {entries.map((entry, index) => (
-          <input
-            key={index}
-            type="text"
-            className="gratitude-input"
-            placeholder={`Grateful for #${index + 1}`}
-            value={entry}
-            onChange={(e) => handleChange(index, e.target.value)}
-          />
-        ))}
+        <div className="gratitude-inputs">
+          {entries.map((entry, index) => (
+            <input
+              key={index}
+              type="text"
+              className="gratitude-input"
+              placeholder={`Grateful for #${index + 1}`}
+              value={entry}
+              onChange={(e) => handleChange(index, e.target.value)}
+            />
+          ))}
+        </div>
+
+        <button className="gratitude-btn" onClick={handleSave}>
+          Save Gratitude 🌿
+        </button>
       </div>
-
-      <button className="gratitude-btn" onClick={handleSave}>
-        Save Gratitude 🌿
-      </button>
 
       {savedLogs.length > 0 && (
         <div className="gratitude-history">

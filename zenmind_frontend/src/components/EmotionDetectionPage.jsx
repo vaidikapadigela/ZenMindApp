@@ -172,7 +172,7 @@ const getSuggestions = (emotion) => {
   return (
     <div className="emotion-wrapper">
       <div className="emotion-card">
-        <h1>Emotion Mirror 🌿</h1>
+        <h1>Emotion Detection 🌿</h1>
         <p className="emotion-subtext">
           Detect your emotion and explore personalized tools to match your mood.
         </p>

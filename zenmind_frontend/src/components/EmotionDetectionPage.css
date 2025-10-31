@@ -15,7 +15,8 @@
   color: var(--text-color);
   border-radius: 20px;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--card-background);
+
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   text-align: center;
   backdrop-filter: blur(8px);
