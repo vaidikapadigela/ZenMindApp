@@ -1,34 +1,44 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./Journaling.css";
-import { useJournal } from './JournalContext';
+import axios from "axios";
+import { useJournal } from "./JournalContext";
 
 const Journaling = () => {
-  const { contextEntries, contextAddEntry } = useJournal();
-  
-  // Get today's date in YYYY-MM-DD format
-  const getTodayDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  };
-  
+  const { contextEntries, contextAddEntry, contextDeleteEntry, syncEntries } = useJournal();
+
+  const getTodayDate = () => new Date().toLocaleDateString("en-CA");
+
   const [entry, setEntry] = useState({
     title: "",
     mood: "",
     date: getTodayDate(),
     journal: "",
     tags: [],
-    addToCalendar: false
+    addToCalendar: false,
   });
+
+  const [editingId, setEditingId] = useState(null);
+  const [editEntry, setEditEntry] = useState({
+    title: "",
+    mood: "",
+    date: "",
+    journal: "",
+    tags: [],
+  });
+
   const [tag, setTag] = useState("");
+  const [editTag, setEditTag] = useState("");
   const [showConfetti, setShowConfetti] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-
+  // ✅ Input change for add form
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setEntry({ ...entry, [name]: type === 'checkbox' ? checked : value });
+    setEntry({ ...entry, [name]: type === "checkbox" ? checked : value });
   };
 
+  // ✅ Add tag
   const handleAddTag = (e) => {
     e.preventDefault();
     if (tag && !entry.tags.includes(tag)) {
@@ -40,21 +50,175 @@ const Journaling = () => {
   const removeTag = (tagToRemove) => {
     setEntry({
       ...entry,
-      tags: entry.tags.filter((t) => t !== tagToRemove)
+      tags: entry.tags.filter((t) => t !== tagToRemove),
     });
   };
 
-  const handleAddEntry = () => {
+  // ✅ Add tag in edit mode
+  const handleAddEditTag = (e) => {
+    e.preventDefault();
+    if (editTag && !editEntry.tags.includes(editTag)) {
+      setEditEntry({ ...editEntry, tags: [...editEntry.tags, editTag] });
+      setEditTag("");
+    }
+  };
+
+  const removeEditTag = (tagToRemove) => {
+    setEditEntry({
+      ...editEntry,
+      tags: editEntry.tags.filter((t) => t !== tagToRemove),
+    });
+  };
+
+  // ✅ Add new entry - FIXED with userId
+  const handleAddEntry = async () => {
     if (entry.title && entry.mood && entry.date && entry.journal) {
-      const toAdd = { ...entry };
-      contextAddEntry(toAdd);
-      setEntry({ title: "", mood: "", date: getTodayDate(), journal: "", tags: [] });
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        
+        // Get userId from token or localStorage
+        let userId = localStorage.getItem("userId");
+        
+        // If userId not in localStorage, decode from token
+        if (!userId && token) {
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            userId = payload.userId || payload.id;
+          } catch (e) {
+            console.error("Error decoding token:", e);
+          }
+        }
+
+        const entryData = {
+          ...entry,
+          userId: userId // Add userId to the entry
+        };
+
+        const res = await axios.post(
+          "http://localhost:5000/api/journal", 
+          entryData, 
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Update context with new entry
+        syncEntries([res.data, ...contextEntries]);
+        
+        setEntry({
+          title: "",
+          mood: "",
+          date: getTodayDate(),
+          journal: "",
+          tags: [],
+          addToCalendar: false,
+        });
+
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 2500);
+      } catch (err) {
+        console.error("Error saving journal:", err);
+        const errorMsg = err.response?.data?.message || err.message || "Failed to save journal entry.";
+        alert(`Error: ${errorMsg}`);
+      } finally {
+        setLoading(false);
+      }
     } else {
       alert("Please fill in all required fields.");
     }
   };
+
+  // ✅ Edit start
+  const handleEdit = (entry) => {
+    setEditingId(entry._id);
+    setEditEntry({
+      title: entry.title || "",
+      mood: entry.mood || "",
+      date: entry.date ? entry.date.slice(0, 10) : getTodayDate(),
+      journal: entry.journal || "",
+      tags: entry.tags || [],
+    });
+  };
+
+  // ✅ Save edit - FIXED
+  const handleSaveEdit = async () => {
+    if (!editEntry.title || !editEntry.mood || !editEntry.journal) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `http://localhost:5000/api/journal/${editingId}`,
+        editEntry,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.status === 200) {
+        const updatedEntries = contextEntries.map((e) =>
+          e._id === editingId ? res.data : e
+        );
+        syncEntries(updatedEntries);
+        setEditingId(null);
+        setEditEntry({ title: "", mood: "", date: "", journal: "", tags: [] });
+      }
+    } catch (err) {
+      console.error("Error updating journal:", err);
+      const errorMsg = err.response?.data?.message || err.message || "Failed to update entry.";
+      alert(`Error: ${errorMsg}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditEntry({ title: "", mood: "", date: "", journal: "", tags: [] });
+    setEditTag("");
+  };
+
+  // ✅ Delete entry - FIXED
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const res = await axios.delete(`http://localhost:5000/api/journal/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.status === 200) {
+        const updatedEntries = contextEntries.filter((e) => e._id !== id);
+        syncEntries(updatedEntries);
+      }
+    } catch (err) {
+      console.error("Error deleting journal:", err);
+      const errorMsg = err.response?.data?.message || err.message || "Failed to delete entry.";
+      alert(`Error: ${errorMsg}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Fetch journals from backend on load
+  useEffect(() => {
+    const fetchJournals = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5000/api/journal", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (Array.isArray(res.data)) {
+          syncEntries(res.data.reverse());
+        }
+      } catch (err) {
+        console.error("Error fetching journals:", err);
+      }
+    };
+    fetchJournals();
+  }, []);
 
   const getMoodEmoji = (mood) => {
     const moodEmojis = {
@@ -65,121 +229,60 @@ const Journaling = () => {
       Calm: "🌿",
       Energetic: "⚡",
       Tired: "😴",
-      Creative: "🎨"
+      Creative: "🎨",
     };
     return moodEmojis[mood] || "";
   };
 
+  const recentEntries = Array.isArray(contextEntries)
+    ? contextEntries.slice(0, 3)
+    : [];
+
   return (
-    <div style={{
-      minHeight: '100vh',
-      padding: '2rem',
-      backgroundColor: '#fefae9',
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        backgroundColor: 'rgba(252, 234, 217, 0.95)',
-        padding: '40px',
-        borderRadius: '16px',
-        boxShadow: '0 12px 24px rgba(0, 0, 0, 0.15)'
-      }}>
-        <h1 style={{
-          color: '#237658',
-          fontSize: '2.5rem',
-          marginBottom: '30px',
-          textAlign: 'center'
-        }}>My Daily Journal</h1>
+    <div className="journal-wrapper">
+      <div className="journal-page">
+        <h1>My Daily Journal</h1>
 
-        <Link to="/HeatMap" className="primary-button">View Heatmap</Link>
-        <br></br>
-        <br></br>
-      <Link to="/JournalEntries" className="primary-button">View Previous Enteries</Link>
-     <br></br>
-     <br></br>
-        
+        <Link to="/JournalEntries" className="primary-button">
+          View Previous Entries
+        </Link>
 
-        {/* Journal Form */}
-        <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.7)',
-          padding: '25px',
-          borderRadius: '12px',
-          marginBottom: '30px'
-        }}>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem',
-              color: '#237658',
-              marginBottom: '8px',
-              display: 'block'
-            }}>Title *</label>
+        <div className="journal-form">
+          <div className="form-group">
+            <label>Title *</label>
             <input
               type="text"
               name="title"
               value={entry.title}
               onChange={handleInputChange}
               placeholder="Give your entry a title..."
-              style={{
-                width: '100%',
-                padding: '15px',
-                fontSize: '1rem',
-                border: '2px solid #455b22',
-                borderRadius: '8px',
-                boxSizing: 'border-box'
-              }}
+              disabled={loading}
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-            <div style={{ flex: 1 }}>
-              <label style={{
-                fontWeight: 'bold',
-                fontSize: '1.1rem',
-                color: '#237658',
-                marginBottom: '8px',
-                display: 'block'
-              }}>Date *</label>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Date *</label>
               <input
                 type="date"
                 name="date"
                 value={entry.date}
                 onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  padding: '15px',
-                  fontSize: '1rem',
-                  border: '2px solid #455b22',
-                  borderRadius: '8px',
-                  boxSizing: 'border-box'
-                }}
+                disabled={loading}
               />
             </div>
 
-            <div style={{ flex: 1 }}>
-              <label style={{
-                fontWeight: 'bold',
-                fontSize: '1.1rem',
-                color: '#237658',
-                marginBottom: '8px',
-                display: 'block'
-              }}>Mood *</label>
-              <select
-                name="mood"
-                value={entry.mood}
+            <div className="form-group">
+              <label>Mood *</label>
+              <select 
+                name="mood" 
+                value={entry.mood} 
                 onChange={handleInputChange}
-                style={{
-                  width: '100%',
-                  padding: '15px',
-                  fontSize: '1rem',
-                  border: '2px solid #455b22',
-                  borderRadius: '8px',
-                  boxSizing: 'border-box',
-                  cursor: 'pointer'
-                }}
+                disabled={loading}
               >
-                <option value="" disabled>Select your mood</option>
+                <option value="" disabled>
+                  Select your mood
+                </option>
                 <option value="Happy">Happy 😊</option>
                 <option value="Sad">Sad 😢</option>
                 <option value="Excited">Excited 🎉</option>
@@ -192,85 +295,37 @@ const Journaling = () => {
             </div>
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{
-              fontWeight: 'bold',
-              fontSize: '1.1rem',
-              color: '#237658',
-              marginBottom: '8px',
-              display: 'block'
-            }}>Journal Entry *</label>
+          <div className="form-group">
+            <label>Journal Entry *</label>
             <textarea
               name="journal"
               value={entry.journal}
               onChange={handleInputChange}
               placeholder="Write your thoughts here..."
-              style={{
-                width: '100%',
-                minHeight: '150px',
-                padding: '15px',
-                fontSize: '1rem',
-                border: '2px solid #455b22',
-                borderRadius: '8px',
-                boxSizing: 'border-box',
-                resize: 'vertical',
-                fontFamily: 'inherit'
-              }}
+              disabled={loading}
             />
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+          {/* Tags */}
+          <div className="tags-section">
+            <div className="tag-input-group">
               <input
                 type="text"
+                className="tag-input"
                 value={tag}
                 onChange={(e) => setTag(e.target.value)}
                 placeholder="Add tags..."
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  border: '2px solid #455b22',
-                  borderRadius: '8px',
-                  fontSize: '1rem'
-                }}
+                disabled={loading}
               />
-              <button onClick={handleAddTag} style={{
-                padding: '12px 24px',
-                backgroundColor: '#F2827F',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: '600'
-              }}>
+              <button onClick={handleAddTag} className="tag-button" disabled={loading}>
                 Add Tag
               </button>
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-              {entry.tags.map((tag, index) => (
-                <span key={index} style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '6px 12px',
-                  backgroundColor: '#237658',
-                  color: 'white',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem'
-                }}>
-                  #{tag}
-                  <button
-                    onClick={() => removeTag(tag)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'white',
-                      marginLeft: '8px',
-                      cursor: 'pointer',
-                      fontSize: '1.2rem',
-                      padding: '0 4px'
-                    }}
-                  >
+            <div className="tags-container">
+              {entry.tags.map((t, i) => (
+                <span key={i} className="tag">
+                  #{t}
+                  <button onClick={() => removeTag(t)} className="tag-remove">
                     ×
                   </button>
                 </span>
@@ -278,80 +333,179 @@ const Journaling = () => {
             </div>
           </div>
 
-          <button onClick={handleAddEntry} style={{
-            backgroundColor: '#F2827F',
-            color: 'white',
-            padding: '16px 32px',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-            display: 'block',
-            margin: '20px auto 0',
-            maxWidth: '300px',
-            width: '100%'
-          }}>
-            Save Entry
+          <button onClick={handleAddEntry} disabled={loading}>
+            {loading ? "Saving..." : "Save Entry"}
           </button>
         </div>
 
-        {/* Recent Entries Preview */}
-        <div>
-          <h2 style={{
-            color: '#237658',
-            fontSize: '1.8rem',
-            marginBottom: '20px'
-          }}>Recent Entries ({contextEntries.slice(0, 3).length})</h2>
-          {contextEntries.slice(0, 3).map((e) => (
-            <div key={e.id} style={{
-              padding: '25px',
-              borderRadius: '8px',
-              backgroundColor: '#f2e6c7',
-              marginBottom: '20px'
-            }}>
-              <h3 style={{ color: '#237658', margin: '0 0 10px 0' }}>{e.title}</h3>
-              <div style={{
-                display: 'flex',
-                gap: '20px',
-                marginBottom: '15px',
-                fontSize: '0.9rem',
-                color: '#455b22'
-              }}>
-                <span>📅 {e.date} at {e.timestamp}</span>
-                <span>{getMoodEmoji(e.mood)} {e.mood}</span>
+        <div className="journal-entries">
+          <h2>Recent Entries ({recentEntries.length})</h2>
+          {recentEntries.length > 0 ? (
+            recentEntries.map((e) => (
+              <div key={e._id} className="journal-entry">
+                {editingId === e._id ? (
+                  <div className="edit-section">
+                    <div className="form-group">
+                      <label>Title *</label>
+                      <input
+                        type="text"
+                        value={editEntry.title}
+                        onChange={(ev) =>
+                          setEditEntry({ ...editEntry, title: ev.target.value })
+                        }
+                        placeholder="Title"
+                        className="edit-input"
+                        disabled={loading}
+                      />
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Date *</label>
+                        <input
+                          type="date"
+                          value={editEntry.date}
+                          onChange={(ev) =>
+                            setEditEntry({ ...editEntry, date: ev.target.value })
+                          }
+                          className="edit-input"
+                          disabled={loading}
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Mood *</label>
+                        <select
+                          value={editEntry.mood}
+                          onChange={(ev) =>
+                            setEditEntry({ ...editEntry, mood: ev.target.value })
+                          }
+                          className="edit-select"
+                          disabled={loading}
+                        >
+                          <option value="">Select mood</option>
+                          <option value="Happy">Happy 😊</option>
+                          <option value="Sad">Sad 😢</option>
+                          <option value="Excited">Excited 🎉</option>
+                          <option value="Anxious">Anxious 😰</option>
+                          <option value="Calm">Calm 🌿</option>
+                          <option value="Energetic">Energetic ⚡</option>
+                          <option value="Tired">Tired 😴</option>
+                          <option value="Creative">Creative 🎨</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Journal Entry *</label>
+                      <textarea
+                        value={editEntry.journal}
+                        onChange={(ev) =>
+                          setEditEntry({ ...editEntry, journal: ev.target.value })
+                        }
+                        placeholder="Edit your thoughts..."
+                        className="edit-textarea"
+                        disabled={loading}
+                      />
+                    </div>
+
+                    {/* Edit Tags Section */}
+                    <div className="tags-section">
+                      <label>Tags</label>
+                      <div className="tag-input-group">
+                        <input
+                          type="text"
+                          className="tag-input"
+                          value={editTag}
+                          onChange={(e) => setEditTag(e.target.value)}
+                          placeholder="Add tags..."
+                          disabled={loading}
+                        />
+                        <button 
+                          onClick={handleAddEditTag} 
+                          className="tag-button"
+                          disabled={loading}
+                        >
+                          Add Tag
+                        </button>
+                      </div>
+                      <div className="tags-container">
+                        {editEntry.tags.map((t, i) => (
+                          <span key={i} className="tag">
+                            #{t}
+                            <button 
+                              onClick={() => removeEditTag(t)} 
+                              className="tag-remove"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="entry-buttons">
+                      <button 
+                        className="save-btn" 
+                        onClick={handleSaveEdit}
+                        disabled={loading}
+                      >
+                        💾 {loading ? "Saving..." : "Save"}
+                      </button>
+                      <button 
+                        className="cancel-btn" 
+                        onClick={handleCancelEdit}
+                        disabled={loading}
+                      >
+                        ❌ Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h3>{e.title || "Untitled"}</h3>
+                    <div className="entry-meta">
+                      <div>📅 {e.date}</div>
+                      <div>
+                        {getMoodEmoji(e.mood)} {e.mood}
+                      </div>
+                    </div>
+                    <p className="entry-content">{e.journal}</p>
+                    {Array.isArray(e.tags) && e.tags.length > 0 && (
+                      <div className="entry-tags">
+                        {e.tags.map((t, i) => (
+                          <span key={i} className="tag">
+                            #{t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="entry-buttons">
+                      <button 
+                        className="edit-btn" 
+                        onClick={() => handleEdit(e)}
+                        disabled={loading}
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDelete(e._id)}
+                        disabled={loading}
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
-              <p style={{ margin: '12px 0', lineHeight: '1.6' }}>{e.journal}</p>
-              {e.tags.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '15px' }}>
-                  {e.tags.map((tag, index) => (
-                    <span key={index} style={{
-                      padding: '6px 12px',
-                      backgroundColor: '#237658',
-                      color: 'white',
-                      borderRadius: '20px',
-                      fontSize: '0.9rem'
-                    }}>
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="no-entries">No recent entries yet.</div>
+          )}
         </div>
 
-        {showConfetti && (
-          <div style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '5rem',
-            animation: 'confettiAnimation 3s ease-out forwards',
-            pointerEvents: 'none'
-          }}>🎉</div>
-        )}
+        {showConfetti && <div className="confetti">🎉</div>}
       </div>
     </div>
   );

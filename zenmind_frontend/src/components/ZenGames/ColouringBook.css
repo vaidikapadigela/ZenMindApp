@@ -15,7 +15,7 @@
 .canvas-wrapper h1 {
  color: var(--gold-color);
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin-bottom: 20px;
   letter-spacing: 1px;
 }
@@ -103,3 +103,28 @@ canvas {
   color: var(--text-color);
   transform: translateY(-2px);
 }
+
+.btn-row {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.save-btn {
+  padding: 10px 25px;
+  background-color: var(--secondary-button-hover);
+  color: var(--text-color);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: var(--primary-button);
+  color: white;
+  transform: translateY(-2px);
+}
+

@@ -25,6 +25,7 @@ const EmotionDetectionPage = () => {
     loadModels();
   }, []);
 
+  // Start camera
   const startCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -35,6 +36,7 @@ const EmotionDetectionPage = () => {
     }
   };
 
+  // Stop camera
   const stopCamera = () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
@@ -43,6 +45,7 @@ const EmotionDetectionPage = () => {
     if (videoRef.current) videoRef.current.srcObject = null;
   };
 
+  // Handle face scan
   const handleScan = async () => {
     if (!videoRef.current) return;
     setIsLoading(true);
@@ -50,25 +53,27 @@ const EmotionDetectionPage = () => {
     try {
       const detections = await faceapi
         .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-        .withFaceExpressions();
+        ?.withFaceExpressions();
 
-      if (detections && detections.expressions) {
-        const detectedEmotion = Object.entries(detections.expressions).sort(
-          (a, b) => b[1] - a[1]
-        )[0][0];
-        setEmotion(detectedEmotion);
-      } else {
-        setEmotion("neutral");
+      if (!detections) {
+        setEmotion("no face detected");
+        return;
       }
+
+      const detectedEmotion = Object.entries(detections.expressions).sort(
+        (a, b) => b[1] - a[1]
+      )[0][0];
+      setEmotion(detectedEmotion);
     } catch (error) {
       console.error("Detection error:", error);
-      setEmotion("neutral");
+      setEmotion("error");
     } finally {
       setIsLoading(false);
       stopCamera();
     }
   };
 
+  // Handle image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -76,21 +81,25 @@ const EmotionDetectionPage = () => {
 
     const img = await faceapi.bufferToImage(file);
     setImage(URL.createObjectURL(file));
+
     const detections = await faceapi
       .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
-      .withFaceExpressions();
+      ?.withFaceExpressions();
 
-    if (detections && detections.expressions) {
-      const detectedEmotion = Object.entries(detections.expressions).sort(
-        (a, b) => b[1] - a[1]
-      )[0][0];
-      setEmotion(detectedEmotion);
-    } else {
-      setEmotion("neutral");
+    if (!detections) {
+      setEmotion("no face detected");
+      setIsLoading(false);
+      return;
     }
+
+    const detectedEmotion = Object.entries(detections.expressions).sort(
+      (a, b) => b[1] - a[1]
+    )[0][0];
+    setEmotion(detectedEmotion);
     setIsLoading(false);
   };
 
+  // Save manual emotion
   const saveManualEmotion = () => {
     if (manualEmotion.trim()) {
       setEmotion(manualEmotion);
@@ -98,7 +107,7 @@ const EmotionDetectionPage = () => {
     }
   };
 
-  // ✅ Emotion-based tool suggestions
+  // Emotion-based tool suggestions
   const getSuggestions = (emotion) => {
     const e = emotion.toLowerCase();
     const tools = {
@@ -109,6 +118,7 @@ const EmotionDetectionPage = () => {
         { name: "Pomodoro Timer", path: "/PomodoroTimer" },
         { name: "To-Do List", path: "/Todo" },
         { name: "Gratitude Log", path: "/GratitudeLog" },
+        { name: "Flappy Bird", path: "/FlappyBird" },
       ],
       sad: [
         { name: "Breathing Exercise", path: "/Breathing-exercise" },
@@ -116,29 +126,35 @@ const EmotionDetectionPage = () => {
         { name: "Zen Memory Game", path: "/ZenMemoryGame" },
         { name: "Meditation Timer", path: "/Meditation-timer" },
         { name: "Gratitude Log", path: "/GratitudeLog" },
+        { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" },
       ],
       angry: [
         { name: "Breathing Exercise", path: "/Breathing-exercise" },
         { name: "Soundscape", path: "/Soundscape" },
         { name: "Journaling", path: "/Journaling" },
         { name: "Pomodoro Timer", path: "/PomodoroTimer" },
+        { name: "Snake Game", path: "/SnakeGame" },
       ],
       fearful: [
         { name: "Meditation Timer", path: "/Meditation-timer" },
         { name: "Soundscape", path: "/Soundscape" },
         { name: "Breathing Exercise", path: "/Breathing-exercise" },
         { name: "Worry Release", path: "/WorryRelease" },
+        { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" },
       ],
       surprised: [
         { name: "Tic Tac Toe", path: "/TicTacToe" },
         { name: "Maze Game", path: "/MazeGame" },
         { name: "Game 2048", path: "/Game2048" },
         { name: "Pomodoro Timer", path: "/PomodoroTimer" },
+        { name: "Flappy Bird", path: "/FlappyBird" },
+        { name: "Snake Game", path: "/SnakeGame" },
       ],
       disgusted: [
         { name: "Soundscape", path: "/Soundscape" },
         { name: "Breathing Exercise", path: "/Breathing-exercise" },
         { name: "Colouring Book", path: "/ColouringBook" },
+        { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" },
       ],
       neutral: [
         { name: "Journaling", path: "/Journaling" },
@@ -152,6 +168,9 @@ const EmotionDetectionPage = () => {
         { name: "Colouring Book", path: "/ColouringBook" },
         { name: "Breakout Game", path: "/BreakoutGame" },
         { name: "Clicker Game", path: "/ClickerGame" },
+        { name: "Flappy Bird", path: "/FlappyBird" },
+        { name: "Snake Game", path: "/SnakeGame" },
+        { name: "Sliding Puzzle", path: "/SlidingPuzzleGame" },
       ],
     };
     return tools[e] || tools.neutral;
@@ -160,7 +179,7 @@ const EmotionDetectionPage = () => {
   return (
     <div className="emotion-wrapper">
       <div className="emotion-card">
-        <h1>Emotion Mirror 🌿</h1>
+        <h1>Emotion Detection 🌿</h1>
         <p className="emotion-subtext">
           Detect your emotion and explore personalized tools to match your mood.
         </p>
@@ -193,10 +212,9 @@ const EmotionDetectionPage = () => {
         {mode === "upload" && (
           <div className="upload-section">
             <label className="custom-upload">
-  <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
-  📤 Upload Image
-</label>
-
+              <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
+              📤 Upload Image
+            </label>
             {image && <img src={image} alt="uploaded" className="preview" />}
           </div>
         )}
@@ -214,18 +232,28 @@ const EmotionDetectionPage = () => {
           </div>
         )}
 
-        {/* Result */}
+        {/* Result Section */}
         {emotion && (
           <div className="result-section">
-            <h2>Detected Emotion: <span>{emotion}</span></h2>
-            <h3>Recommended Tools:</h3>
-            <div className="tool-grid">
-              {getSuggestions(emotion).map((tool, i) => (
-                <button key={i} className="tool-button" onClick={() => navigate(tool.path)}>
-                  {tool.name}
-                </button>
-              ))}
-            </div>
+            <h2>
+              Detected Emotion:{" "}
+              <span className={emotion === "no face detected" ? "no-face" : ""}>
+                {emotion}
+              </span>
+            </h2>
+
+            {emotion !== "no face detected" && emotion !== "error" && (
+              <>
+                <h3>Recommended Tools:</h3>
+                <div className="tool-grid">
+                  {getSuggestions(emotion).map((tool, i) => (
+                    <button key={i} className="tool-button" onClick={() => navigate(tool.path)}>
+                      {tool.name}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

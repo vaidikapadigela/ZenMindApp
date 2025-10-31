@@ -673,3 +673,51 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
+
+  .signup-below-google {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 15px;
+  color: var(--text-color);
+}
+
+.signup-below-google .register-link {
+  color: var(--header-color);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.signup-below-google .register-link:hover {
+  text-decoration: underline;
+  color: var(--hover-teal);
+}
+.entry-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.edit-btn {
+  background-color: #b3e0d6;
+}
+
+.delete-btn {
+  background-color: #f2827f;
+  color: white;
+}
+
+.save-btn {
+  background-color: #8cd4b7;
+}
+
+.cancel-btn {
+  background-color: #ddd;
+}
+
+.edit-section input,
+.edit-section select,
+.edit-section textarea {
+  width: 100%;
+  margin-bottom: 8px;
+}

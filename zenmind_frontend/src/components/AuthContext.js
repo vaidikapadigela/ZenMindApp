@@ -1,9 +1,10 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { calendarService } from '../services/SimplifiedCalendarService';
 
 export const AuthContext = createContext();
 
-// Custom hook for using auth context
+// Custom hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -15,120 +16,189 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  
-  // Check localStorage on initial load and initialize Google API
+
+  // ✅ Check localStorage only once on mount
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      const userData = JSON.parse(savedUser);
-      setUser(userData);
-      setIsLoggedIn(true);
-      
-      // Initialize calendar service only for Google users
-      if (userData.isGoogleUser) {
-        calendarService.init().catch(console.error);
+    const savedToken = localStorage.getItem('token');
+
+    if (savedUser && savedToken) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+        setToken(savedToken);
+        setIsLoggedIn(true);
+
+        // Initialize Google Calendar only for Google users
+        if (userData.isGoogleUser) {
+          calendarService.init().catch(console.error);
+        }
+      } catch (err) {
+        console.error('Error parsing saved user:', err);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
       }
     }
+
     setIsLoading(false);
   }, []);
 
-  // Email/Password validation (you can replace this with actual backend API call)
-  const validateEmailPassword = async (email, password) => {
-    // TODO: Replace this with actual API call to your backend
-    // For now, this is a mock implementation
-    // Example: const response = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-    
-    // Mock validation - replace with real backend call
-    if (email && password) {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // For demo purposes, accept any email/password
-      // In production, this should validate against your backend
-      return {
-        email: email,
-        displayName: email.split('@')[0], // Use email username as display name
-        isGoogleUser: false,
-        uid: `email_${Date.now()}`, // Generate a unique ID
-      };
+  // ✅ Backend login (username/password)
+  const loginWithBackend = async (username, password, rememberMe = false) => {
+    if (!username || !password) {
+      throw new Error('Username and password are required');
     }
-    
-    throw new Error('Invalid email or password');
-  };
 
-  // Login function - supports both Google and Email/Password
-  const login = async (userData) => {
     try {
-      let userToSave;
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        username,
+        password,
+        rememberMe,
+      });
 
-      if (userData.isGoogleUser) {
-        // Google login
-        try {
-          // Initialize calendar service with access token for Google users
-          await calendarService.init(userData.accessToken);
-          calendarService.setAccessToken(userData.accessToken);
-        } catch (error) {
-          console.warn('Calendar service initialization failed:', error);
-          // Continue with login even if calendar fails
-        }
-        
-        userToSave = {
-          email: userData.email,
-          displayName: userData.displayName,
-          googleId: userData.googleId,
-          photoURL: userData.photoURL,
-          accessToken: userData.accessToken,
-          isGoogleUser: true,
-        };
-      } else {
-        // Email/Password login
-        const validatedUser = await validateEmailPassword(userData.email, userData.password);
-        userToSave = validatedUser;
-      }
+      if (response.data?.token) {
+  const userData = {
+    username: response.data.user?.username || username,
+    email: response.data.user?.email || `${username}@zenmind.app`,
+    displayName: response.data.user?.username || username,
+    isGoogleUser: false,
+  };
 
-      localStorage.setItem('user', JSON.stringify(userToSave));
-      setUser(userToSave);
-      setIsLoggedIn(true);
-      return userToSave;
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+  localStorage.setItem('user', JSON.stringify(userData));
+  localStorage.setItem('token', response.data.token);
+  localStorage.setItem('justLoggedIn', 'true');
+
+  setUser(userData);
+  setToken(response.data.token);
+  setIsLoggedIn(true);
+
+  return userData;
+} else {
+  throw new Error(response.data.message || 'Login failed');
+}
+} catch (error) {
+  console.error('Backend login error:', error);
+  throw new Error(
+    error.response?.data?.message || 'Failed to login with backend'
+  );
+}
+};
+
+
+  // ✅ Google login
+// ✅ Google login (fixed and resilient)
+const loginWithGoogle = async (userData) => {
+  if (!userData || !userData.accessToken) {
+    throw new Error('Invalid Google login data');
+  }
+
+  try {
+    // 1️⃣  Send Google user data to backend
+    const res = await axios.post('http://localhost:5000/api/auth/google', {
+      email: userData.email,
+      displayName: userData.displayName,
+      googleId: userData.googleId,
+      photoURL: userData.photoURL,
+    });
+
+    // 2️⃣  Build user object
+    // 2️⃣  Build user object (include access token)
+const userToSave = {
+  username: userData.displayName || userData.email.split("@")[0], // ✅ fallback username
+  email: userData.email,
+  displayName: userData.displayName,
+  googleId: userData.googleId,
+  photoURL: userData.photoURL,
+  isGoogleUser: true,
+  accessToken: userData.accessToken,
+};
+
+
+
+    // 3️⃣  Save token + user
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('user', JSON.stringify(userToSave));
+    localStorage.setItem('justLoggedIn', 'true');
+
+    // 4️⃣  Update state
+    setUser(userToSave);
+    setToken(res.data.token);
+    setIsLoggedIn(true);
+
+    // Optional: initialize calendar
+    await calendarService.init(userData.accessToken);
+    calendarService.setAccessToken(userData.accessToken);
+
+
+    console.log("✅ Google login successful:", userToSave);
+    return userToSave;
+  } catch (error) {
+    console.error('Google login error:', error);
+    throw new Error('Failed to login with Google. Check backend route.');
+  }
+};
+
+
+
+  // ✅ Unified login
+  const login = async (userData) => {
+    if (!userData) {
+      throw new Error('User data missing');
+    }
+
+    // Prevent accidental undefined login
+    if (!userData.isGoogleUser && (!userData.username || !userData.password)) {
+      throw new Error('Username and password are required');
+    }
+
+    if (userData.isGoogleUser) {
+      return await loginWithGoogle(userData);
+    } else {
+      return await loginWithBackend(
+        userData.username,
+        userData.password,
+        userData.rememberMe
+      );
     }
   };
 
-  // Logout function
+  // ✅ Logout function
   const logout = async () => {
     try {
-      // Only sign out from Google if user is a Google user
       if (user?.isGoogleUser) {
         const auth2 = window.gapi?.auth2?.getAuthInstance();
-        if (auth2) {
-          await auth2.signOut();
-        }
-        
-        // Also revoke Google Sign-In
+        if (auth2) await auth2.signOut();
+
         if (window.google?.accounts?.id) {
           window.google.accounts.id.disableAutoSelect();
         }
       }
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('Error during logout:', error);
     }
-    
+
     localStorage.removeItem('user');
-    setIsLoggedIn(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('justLoggedIn');
+
     setUser(null);
+    setToken(null);
+    setIsLoggedIn(false);
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      isLoggedIn, 
-      user, 
-      login,
-      logout,
-      isLoading
-    }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        user,
+        token,
+        login,
+        logout,
+        isLoading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

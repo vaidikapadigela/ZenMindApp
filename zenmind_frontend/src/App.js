@@ -9,10 +9,12 @@ import Soundscape from './components/Soundscape';
 import ProfilePage from './components/ProfilePage';
 import Home from './components/Home';
 import Login from './components/Login';
+import Register from './components/Register';  // ✅ Added Register import
 import MoodHeatmap from './components/MoodHeatmap';
 import JournalEntries from './components/JournalEntries';
 import { AuthProvider, AuthContext } from './components/AuthContext';
 import { JournalProvider } from './components/JournalContext';
+import { TodoProvider } from './components/TodoContext';
 import PomodoroTimer from './components/PomodoroTimer';
 import EmotionDetectionPage from './components/EmotionDetectionPage';
 import WorryRelease from './components/WorryRelease';
@@ -33,11 +35,13 @@ import { useContext } from 'react';
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
   const { isLoggedIn } = useContext(AuthContext);
-  
-  if (!isLoggedIn) {
+  const token = localStorage.getItem("token"); // ensure persistence
+  const loggedIn = isLoggedIn || !!token;
+
+  if (!loggedIn) {
     return <Navigate to="/Login" />;
   }
-  
+
   return children;
 };
 
@@ -48,123 +52,30 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Login" element={<Login />} />
-        
-        {/* Protected Routes */}
-        <Route path="/Journaling" element={
-          <ProtectedRoute>
-            <Journaling />
-          </ProtectedRoute>
-        } />
-        <Route path="/WorryRelease" element={
-          <ProtectedRoute>
-            <WorryRelease />
-          </ProtectedRoute>
-        } />
-        <Route path="/Sudoku" element={
-          <ProtectedRoute>
-            <Sudoku />
-          </ProtectedRoute>
-        } />
-        <Route path="/TicTacToe" element={
-          <ProtectedRoute>
-            <TicTacToe />
-          </ProtectedRoute>
-        } />
-        <Route path="/ColouringBook" element={
-          <ProtectedRoute>
-            <ColouringBook />
-          </ProtectedRoute>
-        } />
-          <Route path="/BreakoutGame" element={
-            <ProtectedRoute>
-              <BreakoutGame />
-            </ProtectedRoute>
-          } />
-        <Route path="/ClickerGame" element={
-          <ProtectedRoute>
-            <ClickerGame />
-          </ProtectedRoute>
-        } />
-        <Route path="/Game2048" element={
-          <ProtectedRoute>
-            <Game2048 />
-          </ProtectedRoute>
-        } />
-         <Route path="/MazeGame" element={
-          <ProtectedRoute>
-            <MazeGame />
-          </ProtectedRoute>
-        } />
-        <Route path="/SnakeGame" element={
-          <ProtectedRoute>
-            <SnakeGame />
-          </ProtectedRoute>
-        } />
-        <Route path="/FlappyBird" element={
-          <ProtectedRoute>
-            <FlappyBird />
-          </ProtectedRoute>
-        } />
-        <Route path="/SlidingPuzzleGame" element={
-          <ProtectedRoute>
-            <SlidingPuzzleGame />
-          </ProtectedRoute>
-        } />
-        <Route path="/ZenMemoryGame" element={
-          <ProtectedRoute>
-            <ZenMemoryGame />
-          </ProtectedRoute>
-        } />
-        <Route path="/Todo" element={
-          <ProtectedRoute>
-            <Todo />
-          </ProtectedRoute>
-        } />
-        <Route path="/Emotion" element={
-          <ProtectedRoute>
-            <EmotionDetectionPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/PomodoroTimer" element={
-          <ProtectedRoute>
-            <PomodoroTimer />
-          </ProtectedRoute>
-        } />
-        <Route path="/GratitudeLog" element={
-          <ProtectedRoute>
-            <GratitudeLog />
-          </ProtectedRoute>
-        } />
-        <Route path="/Breathing-exercise" element={
-          <ProtectedRoute>
-            <Breathing />
-          </ProtectedRoute>
-        } />
-        <Route path="/Meditation-timer" element={
-          <ProtectedRoute>
-            <MeditationTimer />
-          </ProtectedRoute>
-        } />
-        <Route path="/Soundscape" element={
-          <ProtectedRoute>
-            <Soundscape />
-          </ProtectedRoute>
-        } />
-        <Route path="/ProfilePage" element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        } />
-        <Route path="/HeatMap" element={
-          <ProtectedRoute>
-            <MoodHeatmap />
-          </ProtectedRoute>
-        } />
-        <Route path="/JournalEntries" element={
-          <ProtectedRoute>
-            <JournalEntries />
-          </ProtectedRoute>
-        } />
+        <Route path="/Register" element={<Register />} /> {/* Added Register Route */}
+        <Route path="/Journaling" element={<ProtectedRoute><Journaling /></ProtectedRoute>} />
+        <Route path="/WorryRelease" element={<ProtectedRoute><WorryRelease /></ProtectedRoute>} />
+        <Route path="/Sudoku" element={<ProtectedRoute><Sudoku /></ProtectedRoute>} />
+        <Route path="/TicTacToe" element={<ProtectedRoute><TicTacToe /></ProtectedRoute>} />
+        <Route path="/ColouringBook" element={<ProtectedRoute><ColouringBook /></ProtectedRoute>} />
+        <Route path="/BreakoutGame" element={<ProtectedRoute><BreakoutGame /></ProtectedRoute>} />
+        <Route path="/ClickerGame" element={<ProtectedRoute><ClickerGame /></ProtectedRoute>} />
+        <Route path="/Game2048" element={<ProtectedRoute><Game2048 /></ProtectedRoute>} />
+        <Route path="/MazeGame" element={<ProtectedRoute><MazeGame /></ProtectedRoute>} />
+        <Route path="/SnakeGame" element={<ProtectedRoute><SnakeGame /></ProtectedRoute>} />
+        <Route path="/FlappyBird" element={<ProtectedRoute><FlappyBird /></ProtectedRoute>} />
+        <Route path="/SlidingPuzzleGame" element={<ProtectedRoute><SlidingPuzzleGame /></ProtectedRoute>} />
+        <Route path="/ZenMemoryGame" element={<ProtectedRoute><ZenMemoryGame /></ProtectedRoute>} />
+        <Route path="/Todo" element={<ProtectedRoute><Todo /></ProtectedRoute>} />
+        <Route path="/Emotion" element={<ProtectedRoute><EmotionDetectionPage /></ProtectedRoute>} />
+        <Route path="/PomodoroTimer" element={<ProtectedRoute><PomodoroTimer /></ProtectedRoute>} />
+        <Route path="/GratitudeLog" element={<ProtectedRoute><GratitudeLog /></ProtectedRoute>} />
+        <Route path="/Breathing-exercise" element={<ProtectedRoute><Breathing /></ProtectedRoute>} />
+        <Route path="/Meditation-timer" element={<ProtectedRoute><MeditationTimer /></ProtectedRoute>} />
+        <Route path="/Soundscape" element={<ProtectedRoute><Soundscape /></ProtectedRoute>} />
+        <Route path="/ProfilePage" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/HeatMap" element={<ProtectedRoute><MoodHeatmap /></ProtectedRoute>} />
+        <Route path="/JournalEntries" element={<ProtectedRoute><JournalEntries /></ProtectedRoute>} />
       </Routes>
     </>
   );
@@ -174,9 +85,11 @@ function App() {
   return (
     <AuthProvider>
       <JournalProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
+        <TodoProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </TodoProvider>
       </JournalProvider>
     </AuthProvider>
   );

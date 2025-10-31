@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import axios from "axios";
 import "./JournalEntries.css";
-
 
 const JournalEntries = () => {
   const [entries, setEntries] = useState([]);
@@ -11,40 +11,61 @@ const JournalEntries = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
 
-  // Load entries from localStorage
+  // ✅ Load entries from backend
   useEffect(() => {
-    const savedEntries = localStorage.getItem("journalEntries");
-    if (savedEntries) {
-      const parsedEntries = JSON.parse(savedEntries);
-      setEntries(parsedEntries);
-      
-      // Extract all unique tags from entries
-      const allTags = new Set();
-      parsedEntries.forEach(entry => {
-        entry.tags.forEach(tag => allTags.add(tag));
-      });
-      setAvailableTags(Array.from(allTags));
-    }
+    const fetchEntries = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/journal", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const journals = res.data;
+        setEntries(journals);
+
+        // Extract unique tags
+        const allTags = new Set();
+        journals.forEach((entry) => {
+          if (entry.tags) entry.tags.forEach((tag) => allTags.add(tag));
+        });
+        setAvailableTags(Array.from(allTags));
+      } catch (err) {
+        console.error("Error fetching journals:", err);
+      }
+    };
+
+    fetchEntries();
   }, []);
 
-  const handleDeleteEntry = (id) => {
-    if (window.confirm("Are you sure you want to delete this entry?")) {
-      const updatedEntries = entries.filter((e) => e.id !== id);
+  // ✅ Delete entry from backend
+  const handleDeleteEntry = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      await axios.delete(`http://localhost:5000/api/journal/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const updatedEntries = entries.filter((e) => e._id !== id);
       setEntries(updatedEntries);
-      localStorage.setItem("journalEntries", JSON.stringify(updatedEntries));
-      
+
       // Update available tags
       const allTags = new Set();
-      updatedEntries.forEach(entry => {
-        entry.tags.forEach(tag => allTags.add(tag));
+      updatedEntries.forEach((entry) => {
+        if (entry.tags) entry.tags.forEach((tag) => allTags.add(tag));
       });
       setAvailableTags(Array.from(allTags));
+    } catch (err) {
+      console.error("Error deleting journal:", err);
     }
   };
 
   const toggleTagFilter = (tag) => {
     if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter(t => t !== tag));
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
     } else {
       setSelectedTags([...selectedTags, tag]);
     }
@@ -57,34 +78,25 @@ const JournalEntries = () => {
     setSortBy("newest");
   };
 
+  // ✅ Filters and sorting logic
   const filteredEntries = entries
-    .filter((e) => {
-      // Filter by mood
-      if (filter === "all") return true;
-      return e.mood === filter;
-    })
-    .filter((e) => {
-      // Filter by search term
-      return Object.values(e).some((value) =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    })
-    .filter((e) => {
-      // Filter by selected tags
-      if (selectedTags.length === 0) return true;
-      return selectedTags.every(tag => e.tags.includes(tag));
-    })
+    .filter((e) => (filter === "all" ? true : e.mood === filter))
+    .filter((e) =>
+      Object.values(e)
+        .join(" ")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+    .filter((e) =>
+      selectedTags.length === 0
+        ? true
+        : selectedTags.every((tag) => e.tags?.includes(tag))
+    )
     .sort((a, b) => {
-      // Sort entries
-      if (sortBy === "newest") {
-        return b.id - a.id;
-      } else if (sortBy === "oldest") {
-        return a.id - b.id;
-      } else if (sortBy === "alphabetical") {
-        return a.title.localeCompare(b.title);
-      } else {
-        return 0;
-      }
+      if (sortBy === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortBy === "oldest") return new Date(a.createdAt) - new Date(b.createdAt);
+      if (sortBy === "alphabetical") return a.title.localeCompare(b.title);
+      return 0;
     });
 
   const getMoodEmoji = (mood) => {
@@ -96,7 +108,7 @@ const JournalEntries = () => {
       Calm: "🌿",
       Energetic: "⚡",
       Tired: "😴",
-      Creative: "🎨"
+      Creative: "🎨",
     };
     return moodEmojis[mood] || "";
   };
@@ -106,9 +118,12 @@ const JournalEntries = () => {
       <div className="journal-entries-page">
         <header className="entries-header">
           <h1>Journal Entries</h1>
-          <Link to="/" className="primary-button">Back to Journal</Link>
+          <Link to="/Journaling" className="primary-button">
+            Back to Journal
+          </Link>
         </header>
 
+        {/* Filters */}
         <div className="filters-container">
           <div className="search-filter">
             <input
@@ -153,6 +168,7 @@ const JournalEntries = () => {
           </div>
         </div>
 
+        {/* Tag Filters */}
         {availableTags.length > 0 && (
           <div className="tags-filter">
             <h3>Filter by Tags:</h3>
@@ -160,7 +176,9 @@ const JournalEntries = () => {
               {availableTags.map((tag, index) => (
                 <span
                   key={index}
-                  className={`filter-tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
+                  className={`filter-tag ${
+                    selectedTags.includes(tag) ? "selected" : ""
+                  }`}
                   onClick={() => toggleTagFilter(tag)}
                 >
                   #{tag}
@@ -171,17 +189,20 @@ const JournalEntries = () => {
         )}
 
         <div className="entries-stats">
-          <p>Showing {filteredEntries.length} of {entries.length} entries</p>
+          <p>
+            Showing {filteredEntries.length} of {entries.length} entries
+          </p>
         </div>
 
+        {/* Journal Cards */}
         <div className="entries-grid">
           {filteredEntries.length > 0 ? (
             filteredEntries.map((e) => (
-              <div key={e.id} className="entry-card">
+              <div key={e._id} className="entry-card">
                 <div className="entry-card-header">
                   <h3 className="entry-title">{e.title}</h3>
                   <button
-                    onClick={() => handleDeleteEntry(e.id)}
+                    onClick={() => handleDeleteEntry(e._id)}
                     className="delete-button"
                     aria-label="Delete entry"
                   >
@@ -189,15 +210,17 @@ const JournalEntries = () => {
                   </button>
                 </div>
                 <div className="entry-meta">
-                  <span className="entry-date">
-                    📅 {e.date} at {e.timestamp}
-                  </span>
+                  <span className="entry-date">📅 {e.date}</span>
                   <span className="entry-mood">
                     {getMoodEmoji(e.mood)} {e.mood}
                   </span>
                 </div>
-                <p className="entry-preview">{e.journal.length > 150 ? `${e.journal.substring(0, 150)}...` : e.journal}</p>
-                {e.tags.length > 0 && (
+                <p className="entry-preview">
+                  {e.journal.length > 150
+                    ? `${e.journal.substring(0, 150)}...`
+                    : e.journal}
+                </p>
+                {e.tags?.length > 0 && (
                   <div className="entry-tags">
                     {e.tags.map((tag, index) => (
                       <span key={index} className="tag">
@@ -211,7 +234,9 @@ const JournalEntries = () => {
           ) : (
             <div className="no-entries">
               <p>No entries found. Adjust your filters or start journaling!</p>
-              <Link to="/" className="primary-button">Create New Entry</Link>
+              <Link to="/Journaling" className="primary-button">
+                Create New Entry
+              </Link>
             </div>
           )}
         </div>

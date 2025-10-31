@@ -20,17 +20,30 @@
   margin-bottom: 1.5rem;
 }
 
+@keyframes fadeInBoard {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .tic-tac-toe-board {
   display: grid;
   grid-template-columns: repeat(3, 120px);
   grid-template-rows: repeat(3, 120px);
   gap: 10px;
-  background: var(--card-background); /* 👈 use pastel card background instead */
+  background: var(--card-background);
   padding: 1.5rem;
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   justify-content: center;
+  animation: fadeInBoard 0.8s ease;
 }
+
 
 .tic-cell {
   background: white;
@@ -85,3 +98,39 @@
     grid-template-rows: repeat(3, 90px);
   }
 }
+
+@keyframes slideInTitle {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.tic-tac-toe-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--gold-color);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  animation: slideInTitle 1s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.tic-reset:hover {
+  background: #e06a6a;
+  animation: pulse 0.4s ease-in-out;
+}
+
+

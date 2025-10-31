@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const positiveMessages = [
+    "🌿 Take a deep breath — today’s a new opportunity to grow.",
+    "Glad to see you 🌸 Let’s make today peaceful and productive!",
+    "Hello there! ☀️ You’re doing amazing — one mindful step at a time.",
+    "💫 Remember to take a moment for yourself today.",
+    "You’re here, and that’s enough 🌷 Let’s create calm together.",
+    "🌈 Ready to nurture your mind and soul?",
+    "🌻 Let’s cultivate some positive vibes today.",
+    "🌼 Your journey to mindfulness continues.",
+  ];
+
+  useEffect(() => {
+    if (localStorage.getItem("justLoggedIn") === "true") {
+      const randomMsg = positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
+      setMessage(randomMsg);
+      setShowPopup(true);
+      localStorage.removeItem("justLoggedIn");
+    }
+  }, []);
+
+  const closePopup = () => setShowPopup(false);
+
+  
   const mindfulnessFeatures = [
     { title: "Worry Release", description: "Let go of your worries with guided release prompts.", icon: "🌤️", path: "/WorryRelease" },
     { title: "Gratitude Log", description: "Reflect daily and nurture gratitude for the little things.", icon: "🙏", path: "/GratitudeLog" },
@@ -26,7 +52,7 @@ const Home = () => {
     { title: "Clicker", description: "Tap away and relieve stress with a simple clicker game.", icon: "🖱️", path: "/ClickerGame" },
     { title: "2048", description: "Relax while merging numbers to reach 2048!", icon: "🔢", path: "/Game2048" },
     { title: "Maze", description: "Find your way out and enjoy a mindful challenge.", icon: "🌀", path: "/MazeGame" },
-    { title: "Flappy Bird", description: "Simple reflex-based fun — hit space to fly!", icon: "🐤", path: "/FlappyBirdGame" },
+    { title: "Flappy Bird", description: "Simple reflex-based fun — hit space to fly!", icon: "🐤", path: "/FlappyBird" },
     { title: "Snake", description: "Classic arcade fun — grow longer, stay alive!", icon: "🐍", path: "/SnakeGame" },
     { title: "Sliding Puzzle", description: "Slow-paced, focus-boosting puzzle challenge.", icon: "🧩", path: "/SlidingPuzzleGame" },
   ];
@@ -40,7 +66,7 @@ const Home = () => {
           <p>Your personal sanctuary for mindfulness, relaxation, and focus</p>
           <div className="hero-buttons">
             <Link to="/Emotion" className="primary-button">Detect Emotion</Link>
-            <Link to="/ProfilePage" className="secondary-button">View Profile</Link>
+            <Link to="/ProfilePage" className="primary-button">View Profile</Link>
           </div>
         </div>
       </div>
@@ -146,6 +172,16 @@ const Home = () => {
           <Link to="/Emotion" className="cta-button">Detect Emotion & Get Suggestions</Link>
         </div>
       </section>
+
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-card">
+            <p className="popup-message">{message}</p>
+            <button className="popup-button" onClick={closePopup}>Got it 🌿</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

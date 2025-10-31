@@ -6,6 +6,8 @@ import { AuthContext } from "./AuthContext";
 const Navbar = () => {
   const [activeBox, setActiveBox] = useState(null);
   const { isLoggedIn, logout } = useContext(AuthContext);
+  const token = localStorage.getItem("token");
+  const isUserLoggedIn = isLoggedIn || !!token;
 
   const handleLogout = () => {
     logout();

@@ -353,3 +353,35 @@
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+/* Theme Buttons – Matching Navbar & ZenMind Colors */
+.palette-button.sunset {
+  background: linear-gradient(90deg, var(--primary-button), var(--somecolor));
+  color: white;
+}
+
+.palette-button.ocean {
+  background: linear-gradient(90deg, #81D8D0, #1F509A);
+  color: white;
+}
+
+.palette-button.forest {
+  background: linear-gradient(90deg, #3BB143, var(--header-color));
+  color: white;
+}
+
+.palette-button.twilight {
+  background: linear-gradient(90deg, #EFB6C8, #673F69);
+  color: white;
+}
+
+.palette-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+.palette-button {
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.palette-button.selected {
+  box-shadow: 0 0 0 3px white, 0 0 0 5px var(--header-color);
+}
