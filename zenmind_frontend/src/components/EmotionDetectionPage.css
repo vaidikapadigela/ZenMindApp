@@ -284,3 +284,8 @@
 .custom-upload input[type="file"] {
   display: none;
 }
+.no-face {
+  color: #d9534f;
+  font-weight: bold;
+  text-transform: uppercase;
+}
