@@ -1,16 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
 import "./ColouringBook.css";
-import { MdCleaningServices } from "react-icons/md"; // 🧼 eraser icon
+import { MdCleaningServices } from "react-icons/md";
 
 const colors = [
-  "#F2827F", // coral pink
-  "#B3E0D6", // pastel teal
-  "#3BB143", // green
-  "#81D8D0", // light teal
-  "#E5B73B", // gold
-  "#237658", // dark green
-  "#F9E076", // light yellow
-  "#FF6347"  // tomato
+  "#F2827F",
+  "#B3E0D6",
+  "#3BB143",
+  "#81D8D0",
+  "#E5B73B",
+  "#237658",
+  "#F9E076",
+  "#FF6347"
 ];
 
 export default function CanvasColoringBook() {
@@ -23,6 +23,10 @@ export default function CanvasColoringBook() {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
+
+    // ✅ Ensure a white background
+    context.fillStyle = "white";
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
     context.lineCap = "round";
     context.lineJoin = "round";
@@ -57,7 +61,7 @@ export default function CanvasColoringBook() {
     if (!drawing || !ctx) return;
     const { x, y } = getCoordinates(e);
     ctx.strokeStyle = isEraser ? "white" : color;
-    ctx.lineWidth = isEraser ? 25 : 5; // ✅ larger eraser stroke
+    ctx.lineWidth = isEraser ? 25 : 5;
     ctx.lineTo(x, y);
     ctx.stroke();
   };
@@ -72,10 +76,23 @@ export default function CanvasColoringBook() {
     if (!ctx) return;
     const canvas = canvasRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ✅ refill background as white after clear
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
 
   const toggleEraser = () => {
     setIsEraser((prev) => !prev);
+  };
+
+  // ✅ NEW: Save as PNG
+  const saveCanvas = () => {
+    const canvas = canvasRef.current;
+    const link = document.createElement("a");
+    link.download = "my_drawing.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
   };
 
   return (
@@ -120,9 +137,14 @@ export default function CanvasColoringBook() {
         onTouchEnd={stopDrawing}
       />
 
-      <button className="clear-btn" onClick={clearCanvas}>
-        Clear Canvas
-      </button>
+      <div className="btn-row">
+        <button className="clear-btn" onClick={clearCanvas}>
+          Clear Canvas
+        </button>
+        <button className="clear-btn" onClick={saveCanvas}>
+          Save Drawing
+        </button>
+      </div>
     </div>
   );
 }

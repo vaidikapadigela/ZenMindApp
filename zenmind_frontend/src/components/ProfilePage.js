@@ -99,7 +99,7 @@ const ProfilePage = () => {
 
         <div className="profile-section">
           <div className="profile-details">
-            <h2>{user?.displayName || "Welcome!"}</h2>
+            <p><strong>Username:</strong> {user?.username || user?.displayName || "Not available"}</p>
             <p><strong>Email:</strong> {user?.email || "Not available"}</p>
             <p><strong>Current Streak:</strong> {current} {current === 1 ? "Day" : "Days"}</p>
             <p><strong>Max Streak:</strong> {max} {max === 1 ? "Day" : "Days"}</p>

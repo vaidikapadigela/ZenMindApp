@@ -26,6 +26,8 @@
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    justify-content: flex-start;
+    padding: 0.5rem 1rem 1.5rem; 
     
   }
   
@@ -280,6 +282,7 @@
 
 .calendar-status-indicator {
   margin-top: 15px;
+  margin-bottom: 15px;
   padding: 12px 18px;
   text-align: center;
   font-size: 15px;

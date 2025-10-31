@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Journaling.css";
+import axios from "axios";
 import { useJournal } from "./JournalContext";
 
 const Journaling = () => {
-  const { contextEntries, contextAddEntry } = useJournal();
+  const { contextEntries, contextAddEntry, contextDeleteEntry, syncEntries } = useJournal();
 
-  // Local date helper (respects timezone)
-  const getTodayDate = () => {
-    return new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
-  };
+  const getTodayDate = () => new Date().toLocaleDateString("en-CA");
 
   const [entry, setEntry] = useState({
     title: "",
@@ -20,16 +18,27 @@ const Journaling = () => {
     addToCalendar: false,
   });
 
-  const [tag, setTag] = useState("");
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editEntry, setEditEntry] = useState({
+    title: "",
+    mood: "",
+    date: "",
+    journal: "",
+    tags: [],
+  });
 
-  // Handle field input
+  const [tag, setTag] = useState("");
+  const [editTag, setEditTag] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Input change for add form
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setEntry({ ...entry, [name]: type === "checkbox" ? checked : value });
   };
 
-  // Add tag
+  // ✅ Add tag
   const handleAddTag = (e) => {
     e.preventDefault();
     if (tag && !entry.tags.includes(tag)) {
@@ -38,7 +47,6 @@ const Journaling = () => {
     }
   };
 
-  // Remove tag
   const removeTag = (tagToRemove) => {
     setEntry({
       ...entry,
@@ -46,33 +54,171 @@ const Journaling = () => {
     });
   };
 
-  // Add journal entry
-  const handleAddEntry = () => {
+  // ✅ Add tag in edit mode
+  const handleAddEditTag = (e) => {
+    e.preventDefault();
+    if (editTag && !editEntry.tags.includes(editTag)) {
+      setEditEntry({ ...editEntry, tags: [...editEntry.tags, editTag] });
+      setEditTag("");
+    }
+  };
+
+  const removeEditTag = (tagToRemove) => {
+    setEditEntry({
+      ...editEntry,
+      tags: editEntry.tags.filter((t) => t !== tagToRemove),
+    });
+  };
+
+  // ✅ Add new entry - FIXED with userId
+  const handleAddEntry = async () => {
     if (entry.title && entry.mood && entry.date && entry.journal) {
-      const toAdd = { ...entry };
-      contextAddEntry(toAdd); // add to context (and localStorage)
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        
+        // Get userId from token or localStorage
+        let userId = localStorage.getItem("userId");
+        
+        // If userId not in localStorage, decode from token
+        if (!userId && token) {
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            userId = payload.userId || payload.id;
+          } catch (e) {
+            console.error("Error decoding token:", e);
+          }
+        }
 
-      // Reset input fields
-      setEntry({
-        title: "",
-        mood: "",
-        date: getTodayDate(),
-        journal: "",
-        tags: [],
-      });
+        const entryData = {
+          ...entry,
+          userId: userId // Add userId to the entry
+        };
 
-      // Confetti animation
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 2500);
+        const res = await axios.post(
+          "http://localhost:5000/api/journal", 
+          entryData, 
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Update context with new entry
+        syncEntries([res.data, ...contextEntries]);
+        
+        setEntry({
+          title: "",
+          mood: "",
+          date: getTodayDate(),
+          journal: "",
+          tags: [],
+          addToCalendar: false,
+        });
+
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 2500);
+      } catch (err) {
+        console.error("Error saving journal:", err);
+        const errorMsg = err.response?.data?.message || err.message || "Failed to save journal entry.";
+        alert(`Error: ${errorMsg}`);
+      } finally {
+        setLoading(false);
+      }
     } else {
       alert("Please fill in all required fields.");
     }
   };
 
-  // Debugging aid — verify when entries update
+  // ✅ Edit start
+  const handleEdit = (entry) => {
+    setEditingId(entry._id);
+    setEditEntry({
+      title: entry.title || "",
+      mood: entry.mood || "",
+      date: entry.date ? entry.date.slice(0, 10) : getTodayDate(),
+      journal: entry.journal || "",
+      tags: entry.tags || [],
+    });
+  };
+
+  // ✅ Save edit - FIXED
+  const handleSaveEdit = async () => {
+    if (!editEntry.title || !editEntry.mood || !editEntry.journal) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `http://localhost:5000/api/journal/${editingId}`,
+        editEntry,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.status === 200) {
+        const updatedEntries = contextEntries.map((e) =>
+          e._id === editingId ? res.data : e
+        );
+        syncEntries(updatedEntries);
+        setEditingId(null);
+        setEditEntry({ title: "", mood: "", date: "", journal: "", tags: [] });
+      }
+    } catch (err) {
+      console.error("Error updating journal:", err);
+      const errorMsg = err.response?.data?.message || err.message || "Failed to update entry.";
+      alert(`Error: ${errorMsg}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditEntry({ title: "", mood: "", date: "", journal: "", tags: [] });
+    setEditTag("");
+  };
+
+  // ✅ Delete entry - FIXED
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const res = await axios.delete(`http://localhost:5000/api/journal/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.status === 200) {
+        const updatedEntries = contextEntries.filter((e) => e._id !== id);
+        syncEntries(updatedEntries);
+      }
+    } catch (err) {
+      console.error("Error deleting journal:", err);
+      const errorMsg = err.response?.data?.message || err.message || "Failed to delete entry.";
+      alert(`Error: ${errorMsg}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Fetch journals from backend on load
   useEffect(() => {
-    console.log("Context updated → entries:", contextEntries);
-  }, [contextEntries]);
+    const fetchJournals = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5000/api/journal", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (Array.isArray(res.data)) {
+          syncEntries(res.data.reverse());
+        }
+      } catch (err) {
+        console.error("Error fetching journals:", err);
+      }
+    };
+    fetchJournals();
+  }, []);
 
   const getMoodEmoji = (mood) => {
     const moodEmojis = {
@@ -88,7 +234,6 @@ const Journaling = () => {
     return moodEmojis[mood] || "";
   };
 
-  // Latest 3 entries safely
   const recentEntries = Array.isArray(contextEntries)
     ? contextEntries.slice(0, 3)
     : [];
@@ -101,9 +246,7 @@ const Journaling = () => {
         <Link to="/JournalEntries" className="primary-button">
           View Previous Entries
         </Link>
-        <br></br>
-        <br></br>
-        {/* --- Form Section --- */}
+
         <div className="journal-form">
           <div className="form-group">
             <label>Title *</label>
@@ -113,6 +256,7 @@ const Journaling = () => {
               value={entry.title}
               onChange={handleInputChange}
               placeholder="Give your entry a title..."
+              disabled={loading}
             />
           </div>
 
@@ -124,15 +268,17 @@ const Journaling = () => {
                 name="date"
                 value={entry.date}
                 onChange={handleInputChange}
+                disabled={loading}
               />
             </div>
 
             <div className="form-group">
               <label>Mood *</label>
-              <select
-                name="mood"
-                value={entry.mood}
+              <select 
+                name="mood" 
+                value={entry.mood} 
                 onChange={handleInputChange}
+                disabled={loading}
               >
                 <option value="" disabled>
                   Select your mood
@@ -156,10 +302,11 @@ const Journaling = () => {
               value={entry.journal}
               onChange={handleInputChange}
               placeholder="Write your thoughts here..."
+              disabled={loading}
             />
           </div>
 
-          {/* --- Tags --- */}
+          {/* Tags */}
           <div className="tags-section">
             <div className="tag-input-group">
               <input
@@ -168,19 +315,17 @@ const Journaling = () => {
                 value={tag}
                 onChange={(e) => setTag(e.target.value)}
                 placeholder="Add tags..."
+                disabled={loading}
               />
-              <button onClick={handleAddTag} className="tag-button">
+              <button onClick={handleAddTag} className="tag-button" disabled={loading}>
                 Add Tag
               </button>
             </div>
             <div className="tags-container">
-              {entry.tags.map((t, index) => (
-                <span key={index} className="tag">
+              {entry.tags.map((t, i) => (
+                <span key={i} className="tag">
                   #{t}
-                  <button
-                    onClick={() => removeTag(t)}
-                    className="tag-remove"
-                  >
+                  <button onClick={() => removeTag(t)} className="tag-remove">
                     ×
                   </button>
                 </span>
@@ -188,38 +333,170 @@ const Journaling = () => {
             </div>
           </div>
 
-          <button onClick={handleAddEntry}>Save Entry</button>
+          <button onClick={handleAddEntry} disabled={loading}>
+            {loading ? "Saving..." : "Save Entry"}
+          </button>
         </div>
 
-        {/* --- Recent Journals Section --- */}
         <div className="journal-entries">
           <h2>Recent Entries ({recentEntries.length})</h2>
           {recentEntries.length > 0 ? (
             recentEntries.map((e) => (
-              <div key={e.id || e.date} className="journal-entry">
-                <div className="entry-header">
-                  <h3>{e.title || "Untitled"}</h3>
-                </div>
+              <div key={e._id} className="journal-entry">
+                {editingId === e._id ? (
+                  <div className="edit-section">
+                    <div className="form-group">
+                      <label>Title *</label>
+                      <input
+                        type="text"
+                        value={editEntry.title}
+                        onChange={(ev) =>
+                          setEditEntry({ ...editEntry, title: ev.target.value })
+                        }
+                        placeholder="Title"
+                        className="edit-input"
+                        disabled={loading}
+                      />
+                    </div>
 
-                <div className="entry-meta">
-                  <div className="entry-date">
-                    📅 {e.date} {e.timestamp && `at ${e.timestamp}`}
-                  </div>
-                  <div className="entry-mood">
-                    {getMoodEmoji(e.mood)} {e.mood}
-                  </div>
-                </div>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Date *</label>
+                        <input
+                          type="date"
+                          value={editEntry.date}
+                          onChange={(ev) =>
+                            setEditEntry({ ...editEntry, date: ev.target.value })
+                          }
+                          className="edit-input"
+                          disabled={loading}
+                        />
+                      </div>
 
-                <p className="entry-content">{e.journal || "(No content)"}</p>
+                      <div className="form-group">
+                        <label>Mood *</label>
+                        <select
+                          value={editEntry.mood}
+                          onChange={(ev) =>
+                            setEditEntry({ ...editEntry, mood: ev.target.value })
+                          }
+                          className="edit-select"
+                          disabled={loading}
+                        >
+                          <option value="">Select mood</option>
+                          <option value="Happy">Happy 😊</option>
+                          <option value="Sad">Sad 😢</option>
+                          <option value="Excited">Excited 🎉</option>
+                          <option value="Anxious">Anxious 😰</option>
+                          <option value="Calm">Calm 🌿</option>
+                          <option value="Energetic">Energetic ⚡</option>
+                          <option value="Tired">Tired 😴</option>
+                          <option value="Creative">Creative 🎨</option>
+                        </select>
+                      </div>
+                    </div>
 
-                {Array.isArray(e.tags) && e.tags.length > 0 && (
-                  <div className="entry-tags">
-                    {e.tags.map((tag, i) => (
-                      <span key={i} className="tag">
-                        #{tag}
-                      </span>
-                    ))}
+                    <div className="form-group">
+                      <label>Journal Entry *</label>
+                      <textarea
+                        value={editEntry.journal}
+                        onChange={(ev) =>
+                          setEditEntry({ ...editEntry, journal: ev.target.value })
+                        }
+                        placeholder="Edit your thoughts..."
+                        className="edit-textarea"
+                        disabled={loading}
+                      />
+                    </div>
+
+                    {/* Edit Tags Section */}
+                    <div className="tags-section">
+                      <label>Tags</label>
+                      <div className="tag-input-group">
+                        <input
+                          type="text"
+                          className="tag-input"
+                          value={editTag}
+                          onChange={(e) => setEditTag(e.target.value)}
+                          placeholder="Add tags..."
+                          disabled={loading}
+                        />
+                        <button 
+                          onClick={handleAddEditTag} 
+                          className="tag-button"
+                          disabled={loading}
+                        >
+                          Add Tag
+                        </button>
+                      </div>
+                      <div className="tags-container">
+                        {editEntry.tags.map((t, i) => (
+                          <span key={i} className="tag">
+                            #{t}
+                            <button 
+                              onClick={() => removeEditTag(t)} 
+                              className="tag-remove"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="entry-buttons">
+                      <button 
+                        className="save-btn" 
+                        onClick={handleSaveEdit}
+                        disabled={loading}
+                      >
+                        💾 {loading ? "Saving..." : "Save"}
+                      </button>
+                      <button 
+                        className="cancel-btn" 
+                        onClick={handleCancelEdit}
+                        disabled={loading}
+                      >
+                        ❌ Cancel
+                      </button>
+                    </div>
                   </div>
+                ) : (
+                  <>
+                    <h3>{e.title || "Untitled"}</h3>
+                    <div className="entry-meta">
+                      <div>📅 {e.date}</div>
+                      <div>
+                        {getMoodEmoji(e.mood)} {e.mood}
+                      </div>
+                    </div>
+                    <p className="entry-content">{e.journal}</p>
+                    {Array.isArray(e.tags) && e.tags.length > 0 && (
+                      <div className="entry-tags">
+                        {e.tags.map((t, i) => (
+                          <span key={i} className="tag">
+                            #{t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="entry-buttons">
+                      <button 
+                        className="edit-btn" 
+                        onClick={() => handleEdit(e)}
+                        disabled={loading}
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDelete(e._id)}
+                        disabled={loading}
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             ))

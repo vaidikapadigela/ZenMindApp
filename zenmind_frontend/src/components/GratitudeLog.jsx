@@ -1,11 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./GratitudeLog.css";
+import axios from "axios";
+
 
 const GratitudeLog = () => {
   const [entries, setEntries] = useState(["", "", ""]);
   const [savedLogs, setSavedLogs] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editEntries, setEditEntries] = useState([]);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+  const fetchLogs = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:5000/api/gratitude", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSavedLogs(res.data);
+    } catch (err) {
+      console.error("Error fetching gratitude logs:", err);
+    }
+  };
+  fetchLogs();
+}, []);
 
   const handleChange = (index, value) => {
     const updated = [...entries];
@@ -13,17 +31,27 @@ const GratitudeLog = () => {
     setEntries(updated);
   };
 
-  const handleSave = () => {
-    if (entries.some((e) => e.trim() === "")) {
-      alert("Please fill in all three gratitude entries 🌸");
-      return;
-    }
-    setSavedLogs([
-      ...savedLogs,
-      { date: new Date(), items: entries, edited: false },
-    ]);
+  const handleSave = async () => {
+  if (entries.some((e) => e.trim() === "")) {
+    alert("Please fill in all three gratitude entries 🌸");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.post(
+      "http://localhost:5000/api/gratitude",
+      { items: entries },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setSavedLogs([res.data, ...savedLogs]);
     setEntries(["", "", ""]);
-  };
+  } catch (err) {
+    console.error("Error saving gratitude log:", err);
+    alert("Failed to save gratitude log.");
+  }
+};
 
   const handleEdit = (index) => {
     setEditingIndex(index);
@@ -36,24 +64,45 @@ const GratitudeLog = () => {
     setEditEntries(updated);
   };
 
-  const handleSaveEdit = (index) => {
+  const handleSaveEdit = async (index) => {
+  const logId = savedLogs[index]._id;
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.put(
+      `http://localhost:5000/api/gratitude/${logId}`,
+      { items: editEntries },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
     const updatedLogs = [...savedLogs];
-    updatedLogs[index].items = [...editEntries];
-    updatedLogs[index].edited = true;
+    updatedLogs[index] = res.data;
     setSavedLogs(updatedLogs);
     setEditingIndex(null);
-  };
+  } catch (err) {
+    console.error("Error updating gratitude log:", err);
+    alert("Failed to update log.");
+  }
+};
+
 
   const handleCancelEdit = () => {
     setEditingIndex(null);
     setEditEntries([]);
   };
 
-  const handleDelete = (index) => {
-    // ✅ Permanently remove the log
-    const updatedLogs = savedLogs.filter((_, i) => i !== index);
-    setSavedLogs(updatedLogs);
-  };
+  const handleDelete = async (index) => {
+  const logId = savedLogs[index]._id;
+  try {
+    const token = localStorage.getItem("token");
+    await axios.delete(`http://localhost:5000/api/gratitude/${logId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setSavedLogs(savedLogs.filter((_, i) => i !== index));
+  } catch (err) {
+    console.error("Error deleting gratitude log:", err);
+  }
+};
+
 
   return (
     <div className="gratitude-container">
@@ -88,8 +137,9 @@ const GratitudeLog = () => {
             <div key={index} className="gratitude-card">
               <div className="gratitude-card-header">
                 <p className="gratitude-date">
-                  {log.date.toLocaleDateString()} —{" "}
-                  {log.date.toLocaleTimeString()}
+                  {new Date(log.createdAt).toLocaleDateString()} —{" "}
+  {new Date(log.createdAt).toLocaleTimeString()}
+
                   {log.edited && (
                     <span className="edited-badge"> ✏️ Edited</span>
                   )}

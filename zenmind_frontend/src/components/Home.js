@@ -66,7 +66,7 @@ const Home = () => {
           <p>Your personal sanctuary for mindfulness, relaxation, and focus</p>
           <div className="hero-buttons">
             <Link to="/Emotion" className="primary-button">Detect Emotion</Link>
-            <Link to="/ProfilePage" className="secondary-button">View Profile</Link>
+            <Link to="/ProfilePage" className="primary-button">View Profile</Link>
           </div>
         </div>
       </div>
