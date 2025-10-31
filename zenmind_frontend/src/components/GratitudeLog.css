@@ -15,8 +15,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
+   justify-content: flex-start;
+  padding: 1rem 1.5rem 2rem;
 }
 
 /* 🔹 Centered pastel box (covers title, subtitle, inputs, button) */
@@ -106,38 +106,186 @@
   transform: translateY(-2px);
 }
 
-/* 🔹 Saved logs */
+/* 🔹 Previous Gratitude Logs box styling */
 .gratitude-history {
+  background: var(--card-background);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
   margin-top: 2rem;
-  width: 100%;
-  max-width: 500px;
+  width: 90%;
+  max-width: 480px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  animation: fadeSlideIn 0.6s ease;
 }
 
+/* Title for previous logs */
+.gratitude-history h3 {
+  color: var(--gold-color);
+  font-weight: bold;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔹 Scrollable area for multiple logs */
+.gratitude-history {
+  max-height: 300px; /* control visible height */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-color) rgba(255, 255, 255, 0.4);
+}
+
+/* WebKit scrollbar (Chrome, Edge) */
+.gratitude-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.gratitude-history::-webkit-scrollbar-thumb {
+  background: var(--gold-color);
+  border-radius: 6px;
+}
+
+.gratitude-history::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 🔹 Individual log cards */
 .gratitude-card {
-  background: var(--card-background);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--gold-color);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(100, 100, 100, 0.1);
   padding: 1rem;
   margin-bottom: 1rem;
-  transition: transform 0.2s ease;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .gratitude-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .gratitude-date {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #7a8a4d;
   margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
-/* 🔹 Responsive */
-@media (max-width: 600px) {
-  .gratitude-box {
-    padding: 1.5rem;
-  }
-  .gratitude-title {
-    font-size: 1.8rem;
-  }
+/* Style the list inside each saved log */
+.gratitude-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.gratitude-card li {
+  color: var(--text-color);
+  padding-left: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+/* 🔹 Edit mode input styling */
+.edit-input {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--gold-color);
+  border-radius: 10px;
+  padding: 0.6rem;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  width: 100%;
+  margin-bottom: 0.6rem;
+}
+
+/* 🔹 Edit and Save buttons */
+.edit-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.gratitude-btn.edit-btn {
+  background: var(--primary-button);
+  color: white;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+}
+
+.gratitude-btn.save-btn {
+  background: var(--secondary-button-hover);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.gratitude-btn.cancel-btn {
+  background: #f2827f;
+  color: white;
+  font-weight: 600;
+}
+
+/* Small hover polish */
+.gratitude-btn.edit-btn:hover,
+.gratitude-btn.save-btn:hover,
+.gratitude-btn.cancel-btn:hover {
+  transform: translateY(-2px);
+}
+/* 🔹 Card button layout */
+.card-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+/* 🔹 Edit / Delete buttons */
+.gratitude-btn.edit-btn {
+  background: var(--gold-color);
+  color: white;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+}
+
+.gratitude-btn.delete-btn {
+  background: #f2827f;
+  color: white;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+}
+
+/* 🔹 Save / Cancel buttons (edit mode) */
+.gratitude-btn.save-btn {
+  background: var(--secondary-button-hover);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.gratitude-btn.cancel-btn {
+  background: #f2827f;
+  color: white;
+  font-weight: 600;
+}
+
+/* 🔹 Edited tag */
+.edited-badge {
+  font-size: 0.8rem;
+  color: var(--gold-color);
+  font-style: italic;
+  margin-left: 0.4rem;
+}
+
+/* 🔹 Deleted (strike-through) style */
+.deleted-item {
+  text-decoration: line-through;
+  color: rgba(120, 120, 120, 0.7);
+}
+
+/* Hover polish */
+.gratitude-btn.edit-btn:hover,
+.gratitude-btn.delete-btn:hover,
+.gratitude-btn.save-btn:hover,
+.gratitude-btn.cancel-btn:hover {
+  transform: translateY(-2px);
 }

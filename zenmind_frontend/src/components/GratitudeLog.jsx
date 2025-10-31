@@ -4,6 +4,8 @@ import "./GratitudeLog.css";
 const GratitudeLog = () => {
   const [entries, setEntries] = useState(["", "", ""]);
   const [savedLogs, setSavedLogs] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editEntries, setEditEntries] = useState([]);
 
   const handleChange = (index, value) => {
     const updated = [...entries];
@@ -16,8 +18,41 @@ const GratitudeLog = () => {
       alert("Please fill in all three gratitude entries 🌸");
       return;
     }
-    setSavedLogs([...savedLogs, { date: new Date(), items: entries }]);
+    setSavedLogs([
+      ...savedLogs,
+      { date: new Date(), items: entries, edited: false },
+    ]);
     setEntries(["", "", ""]);
+  };
+
+  const handleEdit = (index) => {
+    setEditingIndex(index);
+    setEditEntries([...savedLogs[index].items]);
+  };
+
+  const handleEditChange = (i, value) => {
+    const updated = [...editEntries];
+    updated[i] = value;
+    setEditEntries(updated);
+  };
+
+  const handleSaveEdit = (index) => {
+    const updatedLogs = [...savedLogs];
+    updatedLogs[index].items = [...editEntries];
+    updatedLogs[index].edited = true;
+    setSavedLogs(updatedLogs);
+    setEditingIndex(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setEditEntries([]);
+  };
+
+  const handleDelete = (index) => {
+    // ✅ Permanently remove the log
+    const updatedLogs = savedLogs.filter((_, i) => i !== index);
+    setSavedLogs(updatedLogs);
   };
 
   return (
@@ -51,14 +86,65 @@ const GratitudeLog = () => {
           <h3>Previous Gratitude Logs</h3>
           {savedLogs.map((log, index) => (
             <div key={index} className="gratitude-card">
-              <p className="gratitude-date">
-                {log.date.toLocaleDateString()} — {log.date.toLocaleTimeString()}
-              </p>
-              <ul>
-                {log.items.map((item, i) => (
-                  <li key={i}>🌸 {item}</li>
-                ))}
-              </ul>
+              <div className="gratitude-card-header">
+                <p className="gratitude-date">
+                  {log.date.toLocaleDateString()} —{" "}
+                  {log.date.toLocaleTimeString()}
+                  {log.edited && (
+                    <span className="edited-badge"> ✏️ Edited</span>
+                  )}
+                </p>
+              </div>
+
+              {editingIndex === index ? (
+                <div className="gratitude-edit-section">
+                  {editEntries.map((entry, i) => (
+                    <input
+                      key={i}
+                      type="text"
+                      className="gratitude-input edit-input"
+                      value={entry}
+                      onChange={(e) => handleEditChange(i, e.target.value)}
+                    />
+                  ))}
+                  <div className="edit-btns">
+                    <button
+                      className="gratitude-btn save-btn"
+                      onClick={() => handleSaveEdit(index)}
+                    >
+                      💾 Save Changes
+                    </button>
+                    <button
+                      className="gratitude-btn cancel-btn"
+                      onClick={handleCancelEdit}
+                    >
+                      ❌ Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <ul>
+                    {log.items.map((item, i) => (
+                      <li key={i}>🌸 {item}</li>
+                    ))}
+                  </ul>
+                  <div className="card-btns">
+                    <button
+                      className="gratitude-btn edit-btn"
+                      onClick={() => handleEdit(index)}
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      className="gratitude-btn delete-btn"
+                      onClick={() => handleDelete(index)}
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
